@@ -1,5 +1,8 @@
 # Mozilla Hubs WebRTC Tester
-⚠️ This tool is under early and active development. Some functionality may not work as expected. ⚠️
+
+![A screenshot of the Hubs WebRTC Web client UI](screenshot.png?raw=true)
+
+⚠️ This tool is under **early and active development**. Some functionality may not work as expected. ⚠️
 
 This repository hosts two applications:
 1. A Web-based client application meant for manual testing of the Hubs WebRTC stack. It's a simplified version of the Hubs Web client.
