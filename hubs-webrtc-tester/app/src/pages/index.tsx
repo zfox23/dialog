@@ -6,6 +6,7 @@ import { isBrowser } from '../shared/lib/utilities';
 import { ConnectDisconnectPanel } from '../components/panels/ConnectDisconnectPanel';
 import { RemoteAudioStreamsPanel } from '../components/panels/RemoteAudioStreamsPanel';
 import { HeaderPanel } from '../components/panels/HeaderPanel';
+import { LogPanel } from '../components/panels/LogPanel';
 
 const DEFAULT_DIALOG_HOST = "hubs.local";
 const DEFAULT_DIALOG_PORT = "4443";
@@ -43,24 +44,33 @@ const IndexPage = ({ }) => {
             reticulumHubID: hubID,
             reticulumSessionID: sessionID
         }
-        await dialogAdapter.connectToDialog({
-            dialogConnectionParams,
-            dataFromReticulum
-        });
+        
+        try {
+            await dialogAdapter.connectToDialog({
+                dialogConnectionParams,
+                dataFromReticulum
+            });
+        } catch (e) {
+            console.warn(e);
+        }
 
-        const newStream = await navigator.mediaDevices.getUserMedia({
-            audio: {
-                echoCancellation: true,
-                noiseSuppression: true,
-                autoGainControl: true
-            }
-        });
-        await dialogAdapter.createAudioInputDeviceProducer(newStream);
+        try {
+            const newStream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true
+                }
+            });
+            await dialogAdapter.createAudioInputDeviceProducer(newStream);
+        } catch (e) {
+            console.warn(e);
+        }
     }
 
-    const onDisconnectClicked = async () => {
+    const onDisconnectClicked = () => {
         console.log("You tapped the Disconnect button!");
-        await dialogAdapter.disconnectFromDialog();
+        dialogAdapter.disconnectFromDialog();
     }
 
     const onRefreshLocalAudioStreamsClicked = () => {
@@ -79,7 +89,9 @@ const IndexPage = ({ }) => {
         <Layout>
             <HeaderPanel />
 
-            <ConnectDisconnectPanel onConnectClicked={onConnectClicked} onDisconnectClicked={onDisconnectClicked} dialogHost={dialogHost} setDialogHost={setDialogHost} dialogPort={dialogPort} setDialogPort={dialogPort} hubID={hubID} setHubID={setHubID} sessionID={sessionID} setSessionID={setSessionID} />
+            <ConnectDisconnectPanel onConnectClicked={onConnectClicked} onDisconnectClicked={onDisconnectClicked} dialogHost={dialogHost} setDialogHost={setDialogHost} dialogPort={dialogPort} setDialogPort={setDialogPort} hubID={hubID} setHubID={setHubID} sessionID={sessionID} setSessionID={setSessionID} />
+
+            <LogPanel />
 
             <RemoteAudioStreamsPanel audioStreamData={audioStreamData} onRefreshLocalAudioStreamsClicked={onRefreshLocalAudioStreamsClicked} />
         </Layout>

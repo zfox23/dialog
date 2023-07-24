@@ -28,6 +28,9 @@ export const enableDarkTheme = (enabled, save = true) => {
     } else {
         document.documentElement.classList.remove('dark');
     }
+
+    const evt = new CustomEvent("darkThemeChanged", { "detail": enabled });
+    window.dispatchEvent(evt);
 }
 
 export const ThemeToggleSwitch = ({ isLarge = false, className = "" }) => {
@@ -39,10 +42,14 @@ export const ThemeToggleSwitch = ({ isLarge = false, className = "" }) => {
     }
 
     useEffect(() => {
-        if (isBrowser && (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches))) {
-            document.documentElement.classList.add('dark');
+        if (!isBrowser) {
+            return;
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            enableDarkTheme(true);
         } else {
-            document.documentElement.classList.remove('dark');
+            enableDarkTheme(false);
         }
     })
 

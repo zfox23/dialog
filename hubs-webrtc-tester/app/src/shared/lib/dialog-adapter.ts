@@ -7,6 +7,8 @@ import { dialogMsg } from "./utilities";
 const PROTOO_NUM_RETRIES = 2;
 
 export class DialogAdapter {
+    isReadyForNewConnection: boolean;
+
     _mediasoupDevice: mediasoupClient.Device | null;
     _protooPeer: protooClient.Peer | null;
 
@@ -22,6 +24,8 @@ export class DialogAdapter {
     _consumers: Map<string, Consumer>;
 
     constructor() {
+        this.isReadyForNewConnection = true;
+
         this._mediasoupDevice = null;
         this._protooPeer = null;
 
@@ -36,15 +40,11 @@ export class DialogAdapter {
     private _cleanUpLocalState() {
         dialogMsg(DialogLogLevel.Log, `_cleanUpLocalState()`, `Cleaning up local state...`);
         this._sendTransport && this._sendTransport.close();
-        this._sendTransport = null;
         this._recvTransport && this._recvTransport.close();
-        this._recvTransport = null;
-        this._audioInputDeviceProducer = null;
         // this._shareProducer = null;
         // this._cameraProducer = null;
-
-        this._protooPeer = null;
-        this._mediasoupDevice = null;
+            
+        this.isReadyForNewConnection = true;
     }
 
     private _removeConsumer(consumerId) {
@@ -191,7 +191,7 @@ export class DialogAdapter {
                 }
 
                 case "activeSpeaker":
-                    //  This notification happens regularly and doesn't need to be logged.
+                    // This notification happens regularly and doesn't need to be logged.
                     // dialogMsg(DialogLogLevel.Log, `Protoo Signaling`, `Received \`activeSpeaker\` event.\n${JSON.stringify(notification.data)}`);
                     break;
 
@@ -238,6 +238,11 @@ export class DialogAdapter {
 
         this._sendTransport.observer.on("close", () => {
             dialogMsg(DialogLogLevel.Log, `DialogAdapter._sendTransport`, `Received \`close\` event`);
+
+            if (!this._sendTransport) {
+                return;
+            }
+            this._sendTransport = null;
         });
         this._sendTransport.observer.on("newproducer", producer => {
             dialogMsg(DialogLogLevel.Log, `DialogAdapter._sendTransport`, `Received \`newproducer\` event. new producer id: \`${producer.id}\``);
@@ -355,6 +360,12 @@ export class DialogAdapter {
 
         this._recvTransport.observer.on("close", () => {
             dialogMsg(DialogLogLevel.Log, `DialogAdapter._recvTransport`, `Received \`close\` event`);
+            
+            if (!this._recvTransport) {
+                return;
+            }
+
+            this._recvTransport = null;
         });
         this._recvTransport.observer.on("newproducer", producer => {
             dialogMsg(DialogLogLevel.Log, `DialogAdapter._recvTransport`, `Received \`newproducer\` event. New producer id: \`${producer.id}\``);
@@ -487,6 +498,11 @@ export class DialogAdapter {
 
                     this._audioInputDeviceProducer.on("transportclose", () => {
                         dialogMsg(DialogLogLevel.Log, `_audioInputDeviceProducer`, `Received \`transportclose\`.`);
+
+                        if (!this._audioInputDeviceProducer) {
+                            return;
+                        }
+
                         this._audioInputDeviceProducer = null;
                     });
                 }
@@ -501,23 +517,29 @@ export class DialogAdapter {
     }
 
     public async connectToDialog({ dialogConnectionParams, dataFromReticulum }) {
-        this._dialogConnectionParams = dialogConnectionParams;
-        this._dialogRoomID = dataFromReticulum.reticulumHubID;
-        this._signalingPeerID = dataFromReticulum.reticulumSessionID;
-
-        const urlWithParams = new URL(`wss://${this._dialogConnectionParams.host}:${this._dialogConnectionParams.port}`);
-        urlWithParams.searchParams.append("roomId", this._dialogRoomID);
-        urlWithParams.searchParams.append("peerId", this._signalingPeerID);
-
-        const protooTransport = new protooClient.WebSocketTransport(urlWithParams.toString(), {
-            retry: { retries: PROTOO_NUM_RETRIES }
-        });
-
-        this._protooPeer = new protooClient.Peer(protooTransport);
-
-        this._setupProtooPeerEventHandlers();
-
         return new Promise((resolve, reject) => {
+            if (!this.isReadyForNewConnection) {
+                return reject("Not ready for new connection.");
+            }
+
+            this.isReadyForNewConnection = false;
+
+            this._dialogConnectionParams = dialogConnectionParams;
+            this._dialogRoomID = dataFromReticulum.reticulumHubID;
+            this._signalingPeerID = dataFromReticulum.reticulumSessionID;
+    
+            const urlWithParams = new URL(`wss://${this._dialogConnectionParams.host}:${this._dialogConnectionParams.port}`);
+            urlWithParams.searchParams.append("roomId", this._dialogRoomID);
+            urlWithParams.searchParams.append("peerId", this._signalingPeerID);
+    
+            const protooTransport = new protooClient.WebSocketTransport(urlWithParams.toString(), {
+                retry: { retries: PROTOO_NUM_RETRIES }
+            });
+    
+            this._protooPeer = new protooClient.Peer(protooTransport);
+    
+            this._setupProtooPeerEventHandlers();
+
             this._protooPeer.on("open", async () => {
                 dialogMsg(DialogLogLevel.Log, `Protoo Signaling`, `Received \`open\` event. Joining Dialog Room...`);
 
@@ -533,18 +555,17 @@ export class DialogAdapter {
     }
 
     public disconnectFromDialog() {
-        this._cleanUpLocalState();
-
-        if (!this._protooPeer) {
+        if (this._protooPeer) {
+            this._protooPeer.removeAllListeners();
+            if (this._protooPeer.connected) {
+                dialogMsg(DialogLogLevel.Log, `disconnectFromDialog()`, `Closing Protoo signaling connection...`);
+                this._protooPeer.close();
+            }
+        } else {
             dialogMsg(DialogLogLevel.Warn, `disconnectFromDialog()`, `Can't close signaling connection without a \`_protooPeer\`!`);
-            return;
         }
 
-        this._protooPeer.removeAllListeners();
-        if (this._protooPeer.connected) {
-            dialogMsg(DialogLogLevel.Log, `disconnectFromDialog()`, `Closing Protoo signaling connection...`);
-            this._protooPeer.close();
-        }
+        this._cleanUpLocalState();
     }
 
     public getConsumerAudioTracks() {

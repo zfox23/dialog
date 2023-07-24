@@ -10,7 +10,7 @@ export const RemoteAudioStreamsPanel = ({ audioStreamData, onRefreshLocalAudioSt
         <div className='flex flex-col mb-8 p-6 pt-4 bg-slate-200 dark:bg-neutral-900 rounded-md items-center'>
             <div className='flex gap-1'>
                 <h2 className='font-semibold text-xl h-8'>{<SpeakerWaveIcon className='w-5 h-5 inline-block mr-1 relative -top-0.5' />}Remote Audio Streams</h2>
-                <button className='transition-all opacity-70 hover:opacity-100'><QuestionMarkCircleIcon className='w-6 h-6 text-slate-700 dark:text-slate-200' onClick={e => setShowAudioStreamsHelp(!showAudioStreamsHelp)} /></button>
+                <button className='transition-all opacity-70 hover:opacity-100' onClick={e => setShowAudioStreamsHelp(!showAudioStreamsHelp)}><QuestionMarkCircleIcon className='w-6 h-6 text-slate-700 dark:text-slate-200' /></button>
             </div>
             {showAudioStreamsHelp ?
                 <ul className='w-full max-w-xl list-disc ml-4'>
