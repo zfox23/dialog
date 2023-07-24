@@ -62,7 +62,7 @@ const IndexPage = ({ }) => {
                     autoGainControl: true
                 }
             });
-            await dialogAdapter.createAudioInputDeviceProducer(newStream);
+            await dialogAdapter.setInputAudioMediaStream(newStream);
         } catch (e) {
             console.warn(e);
         }
