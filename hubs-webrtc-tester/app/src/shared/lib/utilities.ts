@@ -14,5 +14,13 @@ export const dialogMsg = (level: DialogLogLevel, context: string, message: strin
     }
 }
 
+export const safePrint(item: any) {
+    try {
+        return JSON.stringify(item);
+    } catch (e) {
+        return item;
+    }
+}
+
 // Used to avoid SSR issues when building this app for production.
 export const isBrowser = typeof window !== "undefined";
