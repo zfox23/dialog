@@ -7,6 +7,7 @@ import { ConnectDisconnectPanel } from '../components/panels/ConnectDisconnectPa
 import { RemoteAudioStreamsPanel } from '../components/panels/RemoteAudioStreamsPanel';
 import { HeaderPanel } from '../components/panels/HeaderPanel';
 import { LogPanel } from '../components/panels/LogPanel';
+import { AudioInputOutputPanel } from '../components/panels/AudioInputOutputPanel';
 
 const DEFAULT_DIALOG_HOST = "hubs.local";
 const DEFAULT_DIALOG_PORT = "4443";
@@ -53,19 +54,6 @@ const IndexPage = ({ }) => {
         } catch (e) {
             console.warn(e);
         }
-
-        try {
-            const newStream = await navigator.mediaDevices.getUserMedia({
-                audio: {
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                    autoGainControl: true
-                }
-            });
-            await dialogAdapter.setInputAudioMediaStream(newStream);
-        } catch (e) {
-            console.warn(e);
-        }
     }
 
     const onDisconnectClicked = () => {
@@ -90,6 +78,8 @@ const IndexPage = ({ }) => {
             <HeaderPanel />
 
             <ConnectDisconnectPanel onConnectClicked={onConnectClicked} onDisconnectClicked={onDisconnectClicked} dialogHost={dialogHost} setDialogHost={setDialogHost} dialogPort={dialogPort} setDialogPort={setDialogPort} hubID={hubID} setHubID={setHubID} sessionID={sessionID} setSessionID={setSessionID} />
+
+            <AudioInputOutputPanel dialogAdapter={dialogAdapter} />
 
             <LogPanel />
 

@@ -1,5 +1,5 @@
 import * as mediasoupClient from "mediasoup-client";
-import { ConnectionState, Consumer, Producer, Transport, TransportOptions } from "mediasoup-client/lib/types";
+import { ConnectionState } from "mediasoup-client/lib/types";
 import protooClient from "protoo-client";
 import { DialogLogLevel, IceServers, DialogConnectionParams } from "./dialog-interfaces";
 import { dialogMsg } from "./utilities";
@@ -8,13 +8,12 @@ import { DialogTransportController } from "./dialog-transport-controller";
 const PROTOO_NUM_RETRIES = 2;
 
 export class DialogAdapter {
-    signalingState: ConnectionState;
+    signalingState: 'new' | 'connecting' | 'connected' | 'failed' | 'disconnected' | 'closed';
 
     _mediasoupDevice: mediasoupClient.Device | null;
     _protooPeer: protooClient.Peer | null;
 
     _dialogConnectionParams: DialogConnectionParams;
-    _dialogRoomID: string;
     _signalingPeerID: string;
 
     _transportController: DialogTransportController;
@@ -28,23 +27,15 @@ export class DialogAdapter {
         this._transportController = new DialogTransportController();
     }
 
-    private _cleanUpLocalState() {
-        dialogMsg(DialogLogLevel.Log, `_cleanUpLocalState()`, `Cleaning up local state...`);
-        this._transportController.closeTransports();
-        // this._shareProducer = null;
-        // this._cameraProducer = null;
-    }
-
-    private _setupProtooPeerEventHandlers() {
+    private _setupSignalingEventHandlers() {
         if (!this._protooPeer) {
-            dialogMsg(DialogLogLevel.Error, `DialogAdapter._setupProtooPeerEventHandlers()`, `\`this._protooPeer\` is falsey!`);
+            dialogMsg(DialogLogLevel.Error, `DialogAdapter._setupSignalingEventHandlers()`, `\`this._protooPeer\` is falsey!`);
             return;
         }
 
         this._protooPeer.on("disconnected", () => {
             this.signalingState = 'disconnected';
             dialogMsg(DialogLogLevel.Log, `Protoo Signaling`, `Received \`disconnected\` event`);
-            this._cleanUpLocalState();
         });
 
         this._protooPeer.on("failed", attempt => {
@@ -55,6 +46,7 @@ export class DialogAdapter {
         this._protooPeer.on("close", async () => {
             this.signalingState = 'closed';
             dialogMsg(DialogLogLevel.Warn, `Protoo Signaling`, `Received \`close\` event`);
+            this._transportController.closeTransports();
         });
 
         this._protooPeer.on("request", async (request, accept, reject) => {
@@ -190,13 +182,14 @@ export class DialogAdapter {
                 return reject(`Not ready for new connection; signaling state is \`${this.signalingState}\``);
             }
 
+            this.signalingState = "connecting";
+
             this._dialogConnectionParams = dialogConnectionParams;
-            this._dialogRoomID = dataFromReticulum.reticulumHubID;
             this._signalingPeerID = dataFromReticulum.reticulumSessionID;
 
             const urlWithParams = new URL(`wss://${this._dialogConnectionParams.host}:${this._dialogConnectionParams.port}`);
-            urlWithParams.searchParams.append("roomId", this._dialogRoomID);
-            urlWithParams.searchParams.append("peerId", this._signalingPeerID);
+            urlWithParams.searchParams.append("roomId", dataFromReticulum.reticulumHubID);
+            urlWithParams.searchParams.append("peerId", dataFromReticulum.reticulumSessionID);
 
             const protooTransport = new protooClient.WebSocketTransport(urlWithParams.toString(), {
                 retry: { retries: PROTOO_NUM_RETRIES }
@@ -204,7 +197,7 @@ export class DialogAdapter {
 
             this._protooPeer = new protooClient.Peer(protooTransport);
 
-            this._setupProtooPeerEventHandlers();
+            this._setupSignalingEventHandlers();
 
             this._protooPeer.on("open", async () => {
                 this.signalingState = 'connected';
@@ -224,15 +217,13 @@ export class DialogAdapter {
     public disconnectFromDialog() {
         if (this._protooPeer) {
             this._protooPeer.removeAllListeners();
-            if (this._protooPeer.connected) {
+            if (!this._protooPeer.closed) {
                 dialogMsg(DialogLogLevel.Log, `disconnectFromDialog()`, `Closing Protoo signaling connection...`);
                 this._protooPeer.close();
             }
         } else {
             dialogMsg(DialogLogLevel.Warn, `disconnectFromDialog()`, `Can't close signaling connection without a \`_protooPeer\`!`);
         }
-
-        this._cleanUpLocalState();
     }
 
     public setInputAudioMediaStream(inputAudioMediaStream: MediaStream) {
