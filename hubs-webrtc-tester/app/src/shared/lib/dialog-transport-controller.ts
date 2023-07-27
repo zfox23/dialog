@@ -265,6 +265,7 @@ export class DialogTransportController {
                 sawAudio = true;
 
                 if (this._audioInputDeviceProducer) {
+                    dialogMsg(DialogLogLevel.Log, `DialogTransportController.createAudioInputDeviceProducer()`, `Producer already exists; replacing its track with the new track.`);
                     if (this._audioInputDeviceProducer.track && this._audioInputDeviceProducer.track !== track) {
                         this._audioInputDeviceProducer.track.stop();
                         this._audioInputDeviceProducer.replaceTrack({ track });

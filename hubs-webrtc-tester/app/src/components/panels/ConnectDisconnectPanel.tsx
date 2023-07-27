@@ -10,16 +10,18 @@ export const ConnectDisconnectPanel = ({ onConnectClicked, onDisconnectClicked, 
 
     return (
         <div className='flex flex-col mb-8 bg-slate-200 dark:bg-neutral-900 rounded-md items-center'>
-            <div className='flex gap-1 w-full justify-center bg-blue-300/40 dark:bg-indigo-900 rounded-t-md p-2'>
-                <h2 className='font-semibold text-xl h-8'>{<WifiIcon className='w-5 h-5 inline-block mr-1 relative -top-0.5' />}Connect/Disconnect</h2>
-                <button className='transition-all opacity-70 hover:opacity-100' onClick={e => setShowConnectHelp(!showConnectHelp)}><QuestionMarkCircleIcon className='w-6 h-6 text-slate-700 dark:text-slate-200' /></button>
+            <div className='flex flex-col gap-1 w-full justify-center items-center bg-blue-300/40 dark:bg-indigo-900 rounded-t-md p-2'>
+                <div className='flex gap-1 justify-center'>
+                    <h2 className='font-semibold text-xl h-8'>{<WifiIcon className='w-5 h-5 inline-block mr-1 relative -top-0.5' />}Connect/Disconnect</h2>
+                    <button className='transition-all opacity-70 hover:opacity-100' onClick={e => setShowConnectHelp(!showConnectHelp)}><QuestionMarkCircleIcon className='w-6 h-6 text-slate-700 dark:text-slate-200' /></button>
+                </div>
+                {showConnectHelp ?
+                    <ul className='w-full max-w-xl list-disc mx-2 mt-2 p-2 pl-6 rounded-md bg-yellow-50 dark:bg-yellow-800'>
+                        <li>Ensure that Dialog is running first (unless you're testing that failure case).</li>
+                        <li>For convenience, the connection parameters in this form are saved to local storage for future sessions once you tap "Connect".</li>
+                    </ul> : null
+                }
             </div>
-            {showConnectHelp ?
-                <ul className='w-full max-w-xl list-disc ml-4'>
-                    <li>Ensure that Dialog is running first (unless you're testing that failure case).</li>
-                    <li>For convenience, the connection parameters in this form are saved to local storage for future sessions once you tap "Connect".</li>
-                </ul> : null
-            }
             <div className='px-6 pb-4'>
                 <form className='w-full max-w-sm flex flex-col gap-2 bg-slate-300 dark:bg-slate-700 rounded-md p-2 md:p-3 my-4'>
                     <div className='flex flex-col gap-1'>

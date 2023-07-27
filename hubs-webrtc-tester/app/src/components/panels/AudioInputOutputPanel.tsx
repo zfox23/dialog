@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { dialogMsg, isBrowser } from '../../shared/lib/utilities';
 import { DialogAdapter } from '../../shared/lib/dialog-adapter';
 import { Button } from '../Button';
-import { MicrophoneIcon, SpeakerWaveIcon, SpeakerXMarkIcon } from '@heroicons/react/24/solid';
+import { MicrophoneIcon, QuestionMarkCircleIcon, SpeakerWaveIcon, SpeakerXMarkIcon } from '@heroicons/react/24/solid';
 import { useAnimationFrame } from '../../hooks/useAnimationFrame';
 import { DialogLogLevel } from '../../shared/lib/dialog-interfaces';
 
@@ -17,22 +17,34 @@ declare interface CustomAudioContext extends AudioContext {
 }
 
 const AudioIODeviceOption = ({ deviceInfo }: { deviceInfo: MediaDeviceInfo }) => {
+    let label = deviceInfo.label;
+    // Some devices don't have a label.
+    // In some cases, browsers won't supply a label to certain devices.
+    if (!label || label.length === 0) {
+        label = "Unknown Device";
+    }
+
     return (
-        <option value={deviceInfo.deviceId} label={deviceInfo.label} data-kind={deviceInfo.kind}>{deviceInfo.label}</option>
+        <option value={deviceInfo.deviceId} label={label} data-kind={deviceInfo.kind}>{deviceInfo.label}</option>
     )
 }
 
 export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: DialogAdapter }) => {
-    const [audioInputMediaStream, setAudioInputMediaStream] = useState<MediaStream>();
-    const [analyser, setAnalyser] = useState<AnalyserNode>();
-    const [meterValue, setMeterValue] = useState(0.0);
+    const [showAudioIOHelp, setShowAudioIOHelp] = useState(false);
+    const [analyser, setAnalyser] = useState<AnalyserNode | null>();
+    const [audioInputMediaStream, setAudioInputMediaStream] = useState<MediaStream | null>();
     const [audioIODeviceInfo, setAudioIODeviceInfo] = useState<MediaDeviceInfo[]>([]);
     const [selectedAudioInputDeviceID, setSelectedAudioInputDeviceID] = useState<string | undefined>();
     const [selectedAudioOutputDeviceID, setSelectedAudioOutputDeviceID] = useState<string | undefined>();
 
+    const canvasRef = useRef<HTMLCanvasElement>(null);
     const audioContext: CustomAudioContext = new AudioContext();
 
-    const getVolume = (analyser: AnalyserNode) => {
+    const getVolume = () => {
+        if (!analyser) {
+            return 0;
+        }
+
         const buckets = new Uint8Array(analyser.frequencyBinCount);
         analyser.getByteFrequencyData(buckets);
 
@@ -40,13 +52,26 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
     };
 
     useAnimationFrame((dt) => {
-        if (!analyser) {
+        if (!(canvasRef.current)) {
             return;
         }
 
-        const vol = getVolume(analyser);
-        setMeterValue(vol);
-    })
+        const ctx = canvasRef.current.getContext('2d');
+        if (!ctx) {
+            return;
+        }
+
+        const w = canvasRef.current.clientWidth;
+        const h = canvasRef.current.clientHeight;
+        canvasRef.current.width = w;
+        canvasRef.current.height = h;
+
+        ctx.clearRect(0, 0, w, h);
+
+        const vol = getVolume();
+        ctx.fillStyle = vol > 0.8 ? "rgb(255, 0, 0)" : "rgb(0, 255, 0)";
+        ctx.fillRect(0, 0, vol * w, h);
+    }, [analyser])
 
     const setupAudioIODropdowns = async () => {
         if (!isBrowser) {
@@ -70,14 +95,7 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
         let numOutputDevices = 0;
 
         for (let i = 0; i < ioDevices.length; i++) {
-            let deviceLabel = ioDevices[i].label;
             // dialogMsg(DialogLogLevel.Log, `AudioInputOutputPanel.setupAudioIODropdowns()`, `Device label: ${deviceLabel}\nKind: ${ioDevices[i].kind}\nID: ${ioDevices[i].deviceId}`);
-
-            // Some devices don't have a label.
-            // In some cases, browsers won't supply a label to certain devices.
-            if (!deviceLabel || deviceLabel.length === 0) {
-                ioDevices[i].label = deviceLabel = "Unknown Device";
-            }
 
             if (ioDevices[i].kind === "audioinput") {
                 numInputDevices++;
@@ -91,47 +109,56 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
         setAudioIODeviceInfo(ioDevices);
     }
 
-    const setAudioInput = async () => {
+    const setAudioInput = async (inputDeviceID?: string) => {
         let audioConstraints: MediaTrackConstraints = {
             echoCancellation: true,
             noiseSuppression: true,
-            autoGainControl: true
+            autoGainControl: true,
+            deviceId: {}
         };
-        if (selectedAudioInputDeviceID) {
-            if (!audioConstraints.deviceId) {
-                audioConstraints["deviceId"] = {};
-            }
-            audioConstraints["deviceId"]["exact"] = selectedAudioInputDeviceID;
+        if (inputDeviceID) {
+            audioConstraints["deviceId"] = {
+                "exact": inputDeviceID
+            };
         }
         const newStream = await navigator.mediaDevices.getUserMedia({
             audio: audioConstraints,
             video: false
         });
 
-        newStream.getTracks().forEach(track => setSelectedAudioInputDeviceID(track.getSettings().deviceId));
+        // If device selection fails for whatever reason, this will reset the dropdown to the
+        // device that `getUserMedia()` is actually using.
+        const actualDeviceID = newStream.getTracks()[0].getSettings().deviceId;
+        if (inputDeviceID && actualDeviceID !== inputDeviceID) {
+            dialogMsg(DialogLogLevel.Warn, `AudioInputOutputPanel.setAudioInput()`, `You selected audio input device \`${inputDeviceID}\`; \`getUserMedia()\` selected \`${actualDeviceID}\`!`);
+        }
+        setSelectedAudioInputDeviceID(actualDeviceID);
 
         const newInputStreamSource = audioContext.createMediaStreamSource(newStream);
+
         const a = audioContext.createAnalyser();
         a.minDecibels = -100;
         a.maxDecibels = -30;
         a.fftSize = 64;
         newInputStreamSource.connect(a);
+        setAnalyser(a);
 
         setAudioInputMediaStream(newStream);
-        setAnalyser(a);
 
         try {
             await dialogAdapter.setInputAudioMediaStream(newStream);
         } catch (e) {
-            dialogMsg(DialogLogLevel.Warn, `AudioInputOutputPanel.onEnableClicked()`, e);
+            dialogMsg(DialogLogLevel.Warn, `AudioInputOutputPanel.setAudioInput()`, e);
             return;
         }
     }
 
     const onEnableClicked = async () => {
+        dialogMsg(DialogLogLevel.Log, `AudioInputOutputPanel.onEnableClicked()`, `Enabling audio input...`);
+
         try {
-            await setupAudioIODropdowns();
             await setAudioInput();
+            await setupAudioIODropdowns();
         } catch (e) {
             dialogMsg(DialogLogLevel.Warn, `AudioInputOutputPanel.onEnableClicked()`, `Error while getting new audio input stream:\n${e}`);
             return;
@@ -139,7 +166,10 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
     }
 
     const onDisableClicked = () => {
+        dialogMsg(DialogLogLevel.Log, `AudioInputOutputPanel.onEnableClicked()`, `Disabling audio input...`);
+
         audioInputMediaStream?.getTracks().forEach(track => track.stop());
+        setAudioInputMediaStream(null);
         audioContext?.close();
     }
 
@@ -147,7 +177,7 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
         const newID = e.target.value;
         dialogMsg(DialogLogLevel.Log, `AudioInputOutputPanel.onInputDeviceSelectChanged()`, `Input device changed to ID: \`${newID}\``);
 
-        setAudioInput();
+        setAudioInput(newID);
 
         setSelectedAudioInputDeviceID(newID);
     }
@@ -182,19 +212,29 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
 
     return (
         <div className='flex flex-col mb-8 bg-slate-200 dark:bg-neutral-900 rounded-md items-center'>
-            <div className='flex gap-1 w-full justify-center bg-blue-300/40 dark:bg-indigo-900 rounded-t-md p-2'>
-                <h2 className='font-semibold text-xl h-8'>{<MicrophoneIcon className='w-5 h-5 inline-block mr-1 relative -top-0.5' />}Audio I/O</h2>
+            <div className='flex flex-col gap-1 w-full justify-center items-center bg-blue-300/40 dark:bg-indigo-900 rounded-t-md p-2'>
+                <div className='flex gap-1 justify-center'>
+                    <h2 className='font-semibold text-xl h-8'>{<MicrophoneIcon className='w-5 h-5 inline-block mr-1 relative -top-0.5' />}Audio I/O</h2>
+                    <button className='transition-all opacity-70 hover:opacity-100' onClick={e => setShowAudioIOHelp(!showAudioIOHelp)}><QuestionMarkCircleIcon className='w-6 h-6 text-slate-700 dark:text-slate-200' /></button>
+                </div>
+                {showAudioIOHelp ?
+                    <ul className='w-full max-w-xl list-disc mx-2 mt-2 p-2 pl-6 rounded-md bg-yellow-50 dark:bg-yellow-800'>
+                        <li>Enable audio input using the button below to begin transmitting audio to Dialog.</li>
+                        <li><strong>Current test client limitation:</strong> If you enable audio input and then connect to Dialog, your input audio will not be transmitted.</li>
+                        <li>Audio input and output device selection is a common source of bugs and bug-like behavior for Web applications. Use this panel to manually test the behavior of audio I/O device selection while connected to and disconnected from the Dialog server.</li>
+                    </ul> : null
+                }
             </div>
-            <div className='px-6 pb-4'>
-                <div className='flex flex-row gap-2'>
+            <div className='px-6 py-4'>
+                <div className='flex flex-row flex-wrap justify-center gap-2'>
                     <Button className='w-72' buttonType="button" buttonIconLeft={<SpeakerWaveIcon className='w-5 h-5' />} buttonText="Enable Audio Input" onClick={onEnableClicked} />
                     <Button className='w-64' buttonType="button" buttonIconLeft={<SpeakerXMarkIcon className='w-5 h-5' />} buttonText="Disable Audio Input" onClick={onDisableClicked} />
                 </div>
 
-                <div className='flex flex-row gap-2'>
-                    <div className='flex flex-col gap-1 w-1/2'>
-                        <label htmlFor='inputDeviceSelect'>Audio Input Devices:</label>
-                        <select id='inputDeviceSelect' value={selectedAudioInputDeviceID} onChange={onInputDeviceSelectChanged} disabled={audioIODeviceInfo.filter((device) => { return device.kind === 'audioinput' }).length === 0}>
+                <div className='flex flex-col gap-2 bg-slate-300 dark:bg-slate-700 rounded-md p-2 md:p-3 my-4'>
+                    <div className='flex flex-col gap-1'>
+                        <label htmlFor='inputDeviceSelect' className='font-semibold'>Audio Input Device:</label>
+                        <select className='h-8 rounded-md px-2 py-1 w-full bg-slate-50 disabled:bg-neutral-300 dark:disabled:bg-neutral-300 disabled:cursor-not-allowed dark:text-neutral-950'  id='inputDeviceSelect' value={selectedAudioInputDeviceID} onChange={onInputDeviceSelectChanged} disabled={audioIODeviceInfo.filter((device) => { return device.kind === 'audioinput' }).length === 0}>
                             {
                                 audioIODeviceInfo.filter((device) => { return device.kind === 'audioinput' }).map((device, idx) => {
                                     return (
@@ -203,10 +243,11 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
                                 })
                             }
                         </select>
+                        <canvas ref={canvasRef} className='w-full h-2 bg-slate-50 dark:bg-neutral-200 rounded-md' />
                     </div>
-                    <div className='flex flex-col gap-1 w-1/2'>
-                        <label htmlFor='outputDeviceSelect'>Audio Output Devices:</label>
-                        <select id='outputDeviceSelect' onChange={onOutputDeviceSelectChanged} disabled={audioIODeviceInfo.filter((device) => { return device.kind === 'audiooutput' }).length === 0}>
+                    <div className='flex flex-col gap-1'>
+                        <label htmlFor='outputDeviceSelect' className='font-semibold'>Audio Output Device:</label>
+                        <select className='h-8 rounded-md px-2 py-1 w-full bg-slate-50 disabled:bg-neutral-300 dark:disabled:bg-neutral-300 disabled:cursor-not-allowed dark:text-neutral-950' id='outputDeviceSelect' onChange={onOutputDeviceSelectChanged} disabled={audioIODeviceInfo.filter((device) => { return device.kind === 'audiooutput' }).length === 0}>
                             {
                                 audioIODeviceInfo.filter((device) => { return device.kind === 'audiooutput' }).map((device, idx) => {
                                     return (

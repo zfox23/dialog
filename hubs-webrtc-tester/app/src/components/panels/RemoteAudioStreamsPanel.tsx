@@ -13,7 +13,7 @@ export const RemoteAudioStreamsPanel = ({ audioStreamData, onRefreshLocalAudioSt
                 <button className='transition-all opacity-70 hover:opacity-100' onClick={e => setShowAudioStreamsHelp(!showAudioStreamsHelp)}><QuestionMarkCircleIcon className='w-6 h-6 text-slate-700 dark:text-slate-200' /></button>
             </div>
             {showAudioStreamsHelp ?
-                <ul className='w-full max-w-xl list-disc ml-4'>
+                <ul className='w-full max-w-xl list-disc ml-4 p-4'>
                     <li>Once you're connected to a Dialog instance, tap the button below to start listening to audio streams associated with all remote Dialog Consumers.</li>
                     <li>🤞 At some point, there will be a checkbox here for automatically adding/removing audio streams in this list.</li>
                 </ul> : null
