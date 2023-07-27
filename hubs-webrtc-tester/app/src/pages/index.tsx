@@ -23,8 +23,6 @@ const IndexPage = ({ }) => {
     const [hubID, setHubID] = useState(isBrowser ? (localStorage.getItem('hubID') || DEFAULT_HUB_ID) : DEFAULT_HUB_ID);
     const [sessionID, setSessionID] = useState(isBrowser ? (localStorage.getItem('sessionID') || DEFAULT_SESSION_ID) : DEFAULT_SESSION_ID);
 
-    const [audioStreamData, setAudioStreamData] = useState<LocalMediaStreamData[]>([]);
-
     const onConnectClicked = async () => {
         console.log("You tapped the Connect button!");
 
@@ -61,18 +59,6 @@ const IndexPage = ({ }) => {
         dialogAdapter.disconnectFromDialog();
     }
 
-    const onRefreshLocalAudioStreamsClicked = () => {
-        let audioStreamData: LocalMediaStreamData[] = dialogAdapter.getConsumerAudioTracks();
-
-        for (let i = 0; i < audioStreamData.length; i++) {
-            const newMediaStream = new MediaStream();
-            newMediaStream.addTrack(audioStreamData[i].track);
-            audioStreamData[i].mediaStream = newMediaStream;
-        }
-
-        setAudioStreamData(audioStreamData);
-    }
-
     return (
         <Layout>
             <HeaderPanel />
@@ -83,7 +69,7 @@ const IndexPage = ({ }) => {
 
             <LogPanel />
 
-            <RemoteAudioStreamsPanel audioStreamData={audioStreamData} onRefreshLocalAudioStreamsClicked={onRefreshLocalAudioStreamsClicked} />
+            <RemoteAudioStreamsPanel dialogAdapter={dialogAdapter} />
         </Layout>
     )
 }

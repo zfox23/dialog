@@ -2,9 +2,24 @@ import { ArrowPathIcon, QuestionMarkCircleIcon, SpeakerWaveIcon } from '@heroico
 import React, { useState } from 'react';
 import { ConsumerAudioTrackUI } from '../ConsumerAudioTrackUI';
 import { Button } from '../Button';
+import { LocalMediaStreamData } from '../../shared/lib/dialog-interfaces';
 
-export const RemoteAudioStreamsPanel = ({ audioStreamData, onRefreshLocalAudioStreamsClicked }) => {
+export const RemoteAudioStreamsPanel = ({ dialogAdapter }) => {
     const [showAudioStreamsHelp, setShowAudioStreamsHelp] = useState(false);
+
+    const [audioStreamData, setAudioStreamData] = useState<LocalMediaStreamData[]>([]);
+
+    const onRefreshLocalAudioStreamsClicked = () => {
+        let audioStreamData: LocalMediaStreamData[] = dialogAdapter.getConsumerAudioTracks();
+
+        for (let i = 0; i < audioStreamData.length; i++) {
+            const newMediaStream = new MediaStream();
+            newMediaStream.addTrack(audioStreamData[i].track);
+            audioStreamData[i].mediaStream = newMediaStream;
+        }
+
+        setAudioStreamData(audioStreamData);
+    }
 
     return (
         <div className='flex flex-col mb-8 p-6 pt-4 bg-slate-200 dark:bg-neutral-900 rounded-md items-center'>

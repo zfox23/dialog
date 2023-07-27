@@ -1,5 +1,4 @@
 import * as mediasoupClient from "mediasoup-client";
-import { ConnectionState } from "mediasoup-client/lib/types";
 import protooClient from "protoo-client";
 import { DialogLogLevel, IceServers, DialogConnectionParams } from "./dialog-interfaces";
 import { dialogMsg } from "./utilities";
@@ -33,6 +32,14 @@ export class DialogAdapter {
             return;
         }
 
+        // This event doesn't fire when calling `this._protooPeer.close()`. Why not?
+        // Missing this event will result in state-related bugs.
+        this._protooPeer.on("close", () => {
+            this.signalingState = 'closed';
+            dialogMsg(DialogLogLevel.Warn, `Protoo Signaling`, `Received \`close\` event`);
+            this._transportController.closeTransports();
+        });
+
         this._protooPeer.on("disconnected", () => {
             this.signalingState = 'disconnected';
             dialogMsg(DialogLogLevel.Log, `Protoo Signaling`, `Received \`disconnected\` event`);
@@ -41,12 +48,6 @@ export class DialogAdapter {
         this._protooPeer.on("failed", attempt => {
             this.signalingState = 'failed';
             dialogMsg(DialogLogLevel.Error, `Protoo Signaling`, `Received \`failed\` event. Attempt #${attempt}/${PROTOO_NUM_RETRIES + 1}. `);
-        });
-
-        this._protooPeer.on("close", async () => {
-            this.signalingState = 'closed';
-            dialogMsg(DialogLogLevel.Warn, `Protoo Signaling`, `Received \`close\` event`);
-            this._transportController.closeTransports();
         });
 
         this._protooPeer.on("request", async (request, accept, reject) => {

@@ -39,11 +39,12 @@ export const ConnectDisconnectPanel = ({ onConnectClicked, onDisconnectClicked, 
                         </div>
                         <input id="dialog-hub-id" className='h-8 rounded-md p-2 w-full mt-1 dark:text-neutral-950' type="text" placeholder='Room/Hub ID' value={hubID} onChange={e => setHubID(e.target.value)} />
                         {showHubIDHelp ?
-                            <div className='flex flex-col gap-1 text-sm mt-1'>
+                            <div className='flex flex-col gap-1 text-sm mt-1 rounded-md bg-yellow-50 dark:bg-yellow-800 p-1'>
                                 <p>Dialog and its underlying Mediasoup tech use the word "Room" to refer to "the virtual space in which everyone can hear/see each other."</p>
                                 <p>Reticulum uses the word "Hub" to refer to "the virtual space in which everyone can hear/see each other."</p>
                                 <p>If you have Reticulum running, try inputting the <i>Reticulum</i> Hub ID here, i.e. hubs.mozilla.com/<strong>E4e8oLx</strong>/hubs-demo-promenade</p>
                                 <p>Doing so will let you use this Tester to hear the unspatialized audio from folks in that Hub.</p>
+                                <p>Really, though, you can input anything in this field, and Dialog will make a new Room if it has to.</p>
                             </div> : null
                         }
                     </div>
@@ -54,7 +55,7 @@ export const ConnectDisconnectPanel = ({ onConnectClicked, onDisconnectClicked, 
                         </div>
                         <input id="dialog-session-id" className='h-8 rounded-md p-2 w-full mt-1 dark:text-neutral-950' type="text" placeholder='Session ID' value={sessionID} onChange={e => setSessionID(e.target.value)} />
                         {showSessionIDHelp ?
-                            <div className='flex flex-col gap-1 text-sm mt-1'>
+                            <div className='flex flex-col gap-1 text-sm mt-1 rounded-md bg-yellow-50 dark:bg-yellow-800 p-1'>
                                 <p>I don't quite understand exactly what this ID is, where it comes from, or how it is used. TBD!</p>
                                 <p>Dialog and its underlying Protoo signaling tech use the term "Peer ID" to identify other clients connected to the same Dialog Room.</p>
                                 <p>Reticulum uses a few terms to refer to this (and related) concepts, such as <code>localClientID</code>, <code>clientId</code>, <code>session_id</code>, and <code>peerId</code>.</p>
