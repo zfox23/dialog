@@ -51,6 +51,13 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
         localStorage.setItem('noiseSuppression', noiseSuppression.toString());
         localStorage.setItem('autoGainControl', autoGainControl.toString());
         
+        // It may be useful for the client to cache this local stream
+        // such that, when we connect, the stream is automatically added to a producer.
+        // For simplicity, I'll not do that for now.
+        if (dialogAdapter.signalingState !== 'connected') {
+            return;
+        }
+
         setAudioInput();
     }, [selectedAudioInputDeviceID, echoCancellation, noiseSuppression, autoGainControl])
 
@@ -135,6 +142,8 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
                 "exact": selectedAudioInputDeviceID
             };
         }
+
+        dialogMsg(DialogLogLevel.Warn, `AudioInputOutputPanel.setAudioInput()`, `Calling \`getUserMedia()\`...`);
         const newStream = await navigator.mediaDevices.getUserMedia({
             audio: audioConstraints,
             video: false
@@ -172,13 +181,6 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
 
         setAudioInputMediaStream(newStream);
 
-        // It may be useful for the client to cache this local stream
-        // such that, when we connect, the stream is automatically added to a producer.
-        // For simplicity, I'll not do that for now.
-        if (dialogAdapter.signalingState !== 'connected') {
-            return;
-        }
-
         try {
             await dialogAdapter.setInputAudioMediaStream(newStream);
         } catch (e) {
@@ -200,7 +202,7 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
     }
 
     const onDisableClicked = () => {
-        dialogMsg(DialogLogLevel.Log, `AudioInputOutputPanel.onEnableClicked()`, `Disabling audio input...`);
+        dialogMsg(DialogLogLevel.Log, `AudioInputOutputPanel.onDisableClicked()`, `Disabling audio input...`);
 
         audioInputMediaStream?.getTracks().forEach(track => track.stop());
         setAudioInputMediaStream(null);
