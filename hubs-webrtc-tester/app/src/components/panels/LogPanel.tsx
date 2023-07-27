@@ -14,10 +14,10 @@ const DEFAULT_DISPLAY_WARNINGS = true;
 const DEFAULT_DISPLAY_ERRORS = true;
 
 export const LogPanel = ({ }) => {
-    const [logsExpanded, setLogsExpanded] = useState<boolean>(isBrowser ? (localStorage.getItem('logsExpanded') === "true" || DEFAULT_LOGS_EXPANDED) : DEFAULT_LOGS_EXPANDED);
-    const [displayLogs, setDisplayLogs] = useState<boolean>(isBrowser ? (localStorage.getItem('displayLogs') === "true" || DEFAULT_DISPLAY_LOGS) : DEFAULT_DISPLAY_LOGS);
-    const [displayWarnings, setDisplayWarnings] = useState<boolean>(isBrowser ? (localStorage.getItem('displayWarnings') === "true" || DEFAULT_DISPLAY_WARNINGS) : DEFAULT_DISPLAY_WARNINGS);
-    const [displayErrors, setDisplayErrors] = useState<boolean>(isBrowser ? (localStorage.getItem('displayErrors') === "true" || DEFAULT_DISPLAY_ERRORS) : DEFAULT_DISPLAY_ERRORS);
+    const [logsExpanded, setLogsExpanded] = useState<boolean>(isBrowser ? (localStorage.getItem('logsExpanded') ? localStorage.getItem('logsExpanded') === "true" : DEFAULT_LOGS_EXPANDED) : DEFAULT_LOGS_EXPANDED);
+    const [displayLogs, setDisplayLogs] = useState<boolean>(isBrowser ? (localStorage.getItem('displayLogs') ? localStorage.getItem('displayLogs') === "true" : DEFAULT_DISPLAY_LOGS) : DEFAULT_DISPLAY_LOGS);
+    const [displayWarnings, setDisplayWarnings] = useState<boolean>(isBrowser ? (localStorage.getItem('displayWarnings') ? localStorage.getItem('displayWarnings') === "true" : DEFAULT_DISPLAY_WARNINGS) : DEFAULT_DISPLAY_WARNINGS);
+    const [displayErrors, setDisplayErrors] = useState<boolean>(isBrowser ? (localStorage.getItem('displayErrors') ? localStorage.getItem('displayErrors') === "true" : DEFAULT_DISPLAY_ERRORS) : DEFAULT_DISPLAY_ERRORS);
     const [logFilter, setLogFilter] = useState<string[]>([]);
 
     const [logs, setLogs] = useState<MessageType[]>([]);
@@ -35,9 +35,16 @@ export const LogPanel = ({ }) => {
         if (displayWarnings) {
             newLogFilter.push('warn');
         }
+        if (displayErrors) {
+            newLogFilter.push('error');
+        }
+
+        localStorage.setItem('displayLogs', displayLogs.toString());
+        localStorage.setItem('displayWarnings', displayWarnings.toString());
+        localStorage.setItem('displayErrors', displayErrors.toString());
 
         setLogFilter(newLogFilter);
-    }, [displayLogs, displayWarnings])
+    }, [displayLogs, displayWarnings, displayErrors])
 
     useEffect(() => {
         const hookedConsole = Hook(

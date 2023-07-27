@@ -295,7 +295,7 @@ export class DialogTransportController {
         })
 
         if (!sawAudio && this._audioInputDeviceProducer) {
-            this._protooPeer.request("closeProducer", { producerId: this._audioInputDeviceProducer.id });
+            this._protooPeer?.request("closeProducer", { producerId: this._audioInputDeviceProducer.id });
             this._audioInputDeviceProducer.close();
             this._audioInputDeviceProducer = null;
         }

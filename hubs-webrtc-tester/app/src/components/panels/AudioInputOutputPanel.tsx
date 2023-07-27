@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { dialogMsg, isBrowser } from '../../shared/lib/utilities';
 import { DialogAdapter } from '../../shared/lib/dialog-adapter';
 import { Button } from '../Button';
@@ -29,16 +29,30 @@ const AudioIODeviceOption = ({ deviceInfo }: { deviceInfo: MediaDeviceInfo }) =>
     )
 }
 
+const DEFAULT_ECHO_CANCELLATION = true;
+const DEFAULT_NOISE_SUPPRESSION = true;
+const DEFAULT_AUTO_GAIN_CONTROL = true;
 export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: DialogAdapter }) => {
     const [showAudioIOHelp, setShowAudioIOHelp] = useState(false);
     const [analyser, setAnalyser] = useState<AnalyserNode | null>();
     const [audioInputMediaStream, setAudioInputMediaStream] = useState<MediaStream | null>();
     const [audioIODeviceInfo, setAudioIODeviceInfo] = useState<MediaDeviceInfo[]>([]);
+    const [echoCancellation, setEchoCancellation] = useState<boolean>(isBrowser ? (localStorage.getItem('echoCancellation') ? localStorage.getItem('echoCancellation') === "true" : DEFAULT_ECHO_CANCELLATION) : DEFAULT_ECHO_CANCELLATION);
+    const [noiseSuppression, setNoiseSuppression] = useState<boolean>(isBrowser ? (localStorage.getItem('noiseSuppression') ? localStorage.getItem('noiseSuppression') === "true" : DEFAULT_NOISE_SUPPRESSION) : DEFAULT_NOISE_SUPPRESSION);
+    const [autoGainControl, setAutoGainControl] = useState<boolean>(isBrowser ? (localStorage.getItem('autoGainControl') ? localStorage.getItem('autoGainControl') === "true" : DEFAULT_AUTO_GAIN_CONTROL) : DEFAULT_AUTO_GAIN_CONTROL);
     const [selectedAudioInputDeviceID, setSelectedAudioInputDeviceID] = useState<string | undefined>();
     const [selectedAudioOutputDeviceID, setSelectedAudioOutputDeviceID] = useState<string | undefined>();
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const audioContext: CustomAudioContext = new AudioContext();
+
+    useEffect(() => {
+        localStorage.setItem('echoCancellation', echoCancellation.toString());
+        localStorage.setItem('noiseSuppression', noiseSuppression.toString());
+        localStorage.setItem('autoGainControl', autoGainControl.toString());
+        
+        setAudioInput();
+    }, [selectedAudioInputDeviceID, echoCancellation, noiseSuppression, autoGainControl])
 
     const getVolume = () => {
         if (!analyser) {
@@ -109,16 +123,16 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
         setAudioIODeviceInfo(ioDevices);
     }
 
-    const setAudioInput = async (inputDeviceID?: string) => {
+    const setAudioInput = async () => {
         let audioConstraints: MediaTrackConstraints = {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true,
+            echoCancellation: echoCancellation,
+            noiseSuppression: noiseSuppression,
+            autoGainControl: autoGainControl,
             deviceId: {}
         };
-        if (inputDeviceID) {
+        if (selectedAudioInputDeviceID) {
             audioConstraints["deviceId"] = {
-                "exact": inputDeviceID
+                "exact": selectedAudioInputDeviceID
             };
         }
         const newStream = await navigator.mediaDevices.getUserMedia({
@@ -126,13 +140,26 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
             video: false
         });
 
+        const deviceSettings = newStream.getTracks()[0].getSettings();
         // If device selection fails for whatever reason, this will reset the dropdown to the
         // device that `getUserMedia()` is actually using.
-        const actualDeviceID = newStream.getTracks()[0].getSettings().deviceId;
-        if (inputDeviceID && actualDeviceID !== inputDeviceID) {
-            dialogMsg(DialogLogLevel.Warn, `AudioInputOutputPanel.setAudioInput()`, `You selected audio input device \`${inputDeviceID}\`; \`getUserMedia()\` selected \`${actualDeviceID}\`!`);
+        const actualDeviceID = deviceSettings.deviceId;
+        if (selectedAudioInputDeviceID && actualDeviceID !== selectedAudioInputDeviceID) {
+            dialogMsg(DialogLogLevel.Warn, `AudioInputOutputPanel.setAudioInput()`, `You selected audio input device \`${selectedAudioInputDeviceID}\`; \`getUserMedia()\` selected \`${actualDeviceID}\`!`);
+            setSelectedAudioInputDeviceID(actualDeviceID);
         }
-        setSelectedAudioInputDeviceID(actualDeviceID);
+        if (echoCancellation !== !!deviceSettings.echoCancellation) {
+            dialogMsg(DialogLogLevel.Warn, `AudioInputOutputPanel.setAudioInput()`, `You set echoCancellation: \`${echoCancellation}\`; \`getUserMedia()\` selected \`${!!deviceSettings.echoCancellation}\`!`);
+            setEchoCancellation(!!deviceSettings.echoCancellation);
+        }
+        if (noiseSuppression !== !!deviceSettings.noiseSuppression) {
+            dialogMsg(DialogLogLevel.Warn, `AudioInputOutputPanel.setAudioInput()`, `You set noiseSuppression: \`${noiseSuppression}\`; \`getUserMedia()\` selected \`${!!deviceSettings.noiseSuppression}\`!`);
+            setNoiseSuppression(!!deviceSettings.noiseSuppression);
+        }
+        if (autoGainControl !== !!deviceSettings.autoGainControl) {
+            dialogMsg(DialogLogLevel.Warn, `AudioInputOutputPanel.setAudioInput()`, `You set autoGainControl: \`${autoGainControl}\`; \`getUserMedia()\` selected \`${!!deviceSettings.autoGainControl}\`!`);
+            setAutoGainControl(!!deviceSettings.autoGainControl);
+        }
 
         const newInputStreamSource = audioContext.createMediaStreamSource(newStream);
 
@@ -144,6 +171,13 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
         setAnalyser(a);
 
         setAudioInputMediaStream(newStream);
+
+        // It may be useful for the client to cache this local stream
+        // such that, when we connect, the stream is automatically added to a producer.
+        // For simplicity, I'll not do that for now.
+        if (dialogAdapter.signalingState !== 'connected') {
+            return;
+        }
 
         try {
             await dialogAdapter.setInputAudioMediaStream(newStream);
@@ -177,9 +211,9 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
         const newID = e.target.value;
         dialogMsg(DialogLogLevel.Log, `AudioInputOutputPanel.onInputDeviceSelectChanged()`, `Input device changed to ID: \`${newID}\``);
 
-        setAudioInput(newID);
-
         setSelectedAudioInputDeviceID(newID);
+
+        // setAudioInput() will run automatically, since `selectedAudioInputDeviceID` is a `useEffect()` dependency.
     }
 
     const onOutputDeviceSelectChanged = async (e) => {
@@ -233,8 +267,23 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
 
                 <div className='flex flex-col gap-2 bg-slate-300 dark:bg-slate-700 rounded-md p-2 md:p-3 my-4'>
                     <div className='flex flex-col gap-1'>
-                        <label htmlFor='inputDeviceSelect' className='font-semibold'>Audio Input Device:</label>
-                        <select className='h-8 rounded-md px-2 py-1 w-full bg-slate-50 disabled:bg-neutral-300 dark:disabled:bg-neutral-300 disabled:cursor-not-allowed dark:text-neutral-950'  id='inputDeviceSelect' value={selectedAudioInputDeviceID} onChange={onInputDeviceSelectChanged} disabled={audioIODeviceInfo.filter((device) => { return device.kind === 'audioinput' }).length === 0}>
+                        <p className='font-semibold'>Audio Input Device Settings</p>
+                        <div>
+                            <input id="echoCancellationCheckbox" type='checkbox' className='mr-1' checked={echoCancellation} onChange={(e) => { setEchoCancellation(e.target.checked); }} />
+                            <label htmlFor="echoCancellationCheckbox" className=''>Echo Cancellation</label>
+                        </div>
+                        <div>
+                            <input id="noiseSuppressionCheckbox" type='checkbox' className='mr-1' checked={noiseSuppression} onChange={(e) => { setNoiseSuppression(e.target.checked); }} />
+                            <label htmlFor="noiseSuppressionCheckbox" className=''>Noise Suppression</label>
+                        </div>
+                        <div>
+                            <input id="autoGainControlCheckbox" type='checkbox' className='mr-1' checked={autoGainControl} onChange={(e) => { setAutoGainControl(e.target.checked); }} />
+                            <label htmlFor="autoGainControlCheckbox" className=''>Auto Gain Control</label>
+                        </div>
+                    </div>
+                    <div className='flex flex-col gap-1'>
+                        <label htmlFor='inputDeviceSelect' className='font-semibold'>Audio Input Device</label>
+                        <select className='h-8 rounded-md px-2 py-1 w-full bg-slate-50 disabled:bg-neutral-300 dark:disabled:bg-neutral-300 disabled:cursor-not-allowed dark:text-neutral-950' id='inputDeviceSelect' value={selectedAudioInputDeviceID} onChange={onInputDeviceSelectChanged} disabled={audioIODeviceInfo.filter((device) => { return device.kind === 'audioinput' }).length === 0}>
                             {
                                 audioIODeviceInfo.filter((device) => { return device.kind === 'audioinput' }).map((device, idx) => {
                                     return (
@@ -246,7 +295,7 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
                         <canvas ref={canvasRef} className='w-full h-2 bg-slate-50 dark:bg-neutral-200 rounded-md' />
                     </div>
                     <div className='flex flex-col gap-1'>
-                        <label htmlFor='outputDeviceSelect' className='font-semibold'>Audio Output Device:</label>
+                        <label htmlFor='outputDeviceSelect' className='font-semibold'>Audio Output Device</label>
                         <select className='h-8 rounded-md px-2 py-1 w-full bg-slate-50 disabled:bg-neutral-300 dark:disabled:bg-neutral-300 disabled:cursor-not-allowed dark:text-neutral-950' id='outputDeviceSelect' onChange={onOutputDeviceSelectChanged} disabled={audioIODeviceInfo.filter((device) => { return device.kind === 'audiooutput' }).length === 0}>
                             {
                                 audioIODeviceInfo.filter((device) => { return device.kind === 'audiooutput' }).map((device, idx) => {
