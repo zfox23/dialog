@@ -42,9 +42,9 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
     const [autoGainControl, setAutoGainControl] = useState<boolean>(isBrowser ? (localStorage.getItem('autoGainControl') ? localStorage.getItem('autoGainControl') === "true" : DEFAULT_AUTO_GAIN_CONTROL) : DEFAULT_AUTO_GAIN_CONTROL);
     const [selectedAudioInputDeviceID, setSelectedAudioInputDeviceID] = useState<string | undefined>();
     const [selectedAudioOutputDeviceID, setSelectedAudioOutputDeviceID] = useState<string | undefined>();
+    const [audioContext, setAudioContext] = useState<CustomAudioContext>();
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const audioContext: CustomAudioContext = new AudioContext();
 
     useEffect(() => {
         localStorage.setItem('echoCancellation', echoCancellation.toString());
@@ -143,7 +143,7 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
             };
         }
 
-        dialogMsg(DialogLogLevel.Warn, `AudioInputOutputPanel.setAudioInput()`, `Calling \`getUserMedia()\`...`);
+        dialogMsg(DialogLogLevel.Log, `AudioInputOutputPanel.setAudioInput()`, `Calling \`getUserMedia()\`...`);
         const newStream = await navigator.mediaDevices.getUserMedia({
             audio: audioConstraints,
             video: false
@@ -170,9 +170,12 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
             setAutoGainControl(!!deviceSettings.autoGainControl);
         }
 
-        const newInputStreamSource = audioContext.createMediaStreamSource(newStream);
+        
+        const actx: CustomAudioContext = new AudioContext();
 
-        const a = audioContext.createAnalyser();
+        const newInputStreamSource = actx.createMediaStreamSource(newStream);
+
+        const a = actx.createAnalyser();
         a.minDecibels = -100;
         a.maxDecibels = -30;
         a.fftSize = 64;
@@ -180,6 +183,7 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
         setAnalyser(a);
 
         setAudioInputMediaStream(newStream);
+        setAudioContext(actx);
 
         try {
             await dialogAdapter.setInputAudioMediaStream(newStream);
@@ -229,18 +233,22 @@ export const AudioInputOutputPanel = ({ dialogAdapter }: { dialogAdapter: Dialog
             if (typeof audioNode.sinkId !== 'undefined' && typeof audioNode.setSinkId !== 'undefined') {
                 audioNode.setSinkId(newID)
                     .then(() => {
-                        dialogMsg(DialogLogLevel.Log, `AudioInputOutputPanel.onOutputDeviceSelectChanged()`, `New audio output device with ID \`${newID}\` successfully attached to \`${audioNode.classList[0]}\`.`);
+                        dialogMsg(DialogLogLevel.Log, `AudioInputOutputPanel.onOutputDeviceSelectChanged()`, `New audio output device with ID \`${newID}\` successfully attached to \`${audioNode}\`.`);
                     })
                     .catch(error => {
                         dialogMsg(DialogLogLevel.Error, `AudioInputOutputPanel.onOutputDeviceSelectChanged()`, `Error when setting output device on \`${audioNode}\`:\n${error}`);
                     });
             } else {
-                console.error(`Your browser does not support output device selection.`);
+                dialogMsg(DialogLogLevel.Error, `AudioInputOutputPanel.onOutputDeviceSelectChanged()`, `Your browser does not support output device selection.`);
             }
         });
 
-        if (typeof audioContext.setSinkId !== 'undefined') {
-            await audioContext.setSinkId!(newID);
+        if (typeof audioContext?.setSinkId !== 'undefined') {
+            try {
+                await audioContext?.setSinkId!(newID);
+            } catch (e) {
+                dialogMsg(DialogLogLevel.Error, `AudioInputOutputPanel.onOutputDeviceSelectChanged()`, `Error during \`audioContext.setSinkId():\n${e}`);
+            }
         }
 
         setSelectedAudioOutputDeviceID(newID);

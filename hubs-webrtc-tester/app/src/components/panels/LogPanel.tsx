@@ -82,7 +82,7 @@ export const LogPanel = ({ }) => {
             </div>
 
             <div className={`overflow-auto w-full flex flex-col-reverse relative transition-all ${logsExpanded ? 'max-h-96' : 'max-h-16'}`}>
-                <div className='overflow-scroll flex flex-col-reverse'>
+                <div className='overflow-y-scroll flex flex-col-reverse'>
                     <Console filter={logFilter as any} logs={logs as MessageComponent[]} variant={darkThemeEnabled ? 'dark' : 'light'} />
                 </div>
                 <div className='h-6 pointer-events-none absolute top-0 w-full bg-gradient-to-b to-transparent from-slate-200 dark:from-neutral-900'></div>
