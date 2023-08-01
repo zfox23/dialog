@@ -31,7 +31,7 @@ const useHeadings = () => {
     return headings;
 }
 
-const TableOfContents = ({ className }: {className?: string}) => {
+const TableOfContents = ({ className }: { className?: string }) => {
     const headings = useHeadings();
     return (
         <nav className={className}>
@@ -230,7 +230,7 @@ const AboutPage = ({ }) => {
                                     <a className='underline text-xs' target="_blank" href='https://protoo.versatica.com/#websockettransport35'><code>(protoo client docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a>
                                 </div>
                                 <div className='!mt-1 flex w-full'>
-                                    <div className='bg-slate-200 dark:bg-neutral-500 shrink-0 w-[2px] rounded-md' />
+                                    <div className='bg-red-200 dark:bg-red-900 shrink-0 w-[2px] rounded-md' />
                                     <div className='space-y-4 !mt-0 w-full pl-2'>
                                         <p>A <code>WebSocketTransport</code> is a JavaScript class that, when instantiated from the client, attempts to open a WebSocket connection to a specified URL.</p>
 
@@ -281,7 +281,7 @@ const AboutPage = ({ }) => {
                                     <a className='underline text-xs' target="_blank" href='https://protoo.versatica.com/#room'><code>(protoo server docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a>
                                 </div>
                                 <div className='!mt-1 flex w-full'>
-                                    <div className='bg-slate-200 dark:bg-neutral-500 shrink-0 w-[2px] rounded-md' />
+                                    <div className='bg-red-200 dark:bg-red-900 shrink-0 w-[2px] rounded-md' />
                                     <div className='space-y-4 !mt-0 w-full pl-2'>
                                         <p>A Protoo <code>Room</code> is a JavaScript class that "represents a multi-party communication context". A <code>Room</code> contains a list of <code>Peer</code>s.</p>
 
@@ -322,9 +322,26 @@ const AboutPage = ({ }) => {
                                     <a className='underline text-xs' target="_blank" href='https://protoo.versatica.com/#peer'><code>(protoo server docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a> <a className='underline text-xs' target="_blank" href='https://protoo.versatica.com/#peer36'><code>(protoo client docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a>
                                 </div>
                                 <div className='!mt-1 flex w-full'>
-                                    <div className='bg-slate-200 dark:bg-neutral-500 shrink-0 w-[2px] rounded-md' />
+                                    <div className='bg-red-200 dark:bg-red-900 shrink-0 w-[2px] rounded-md' />
                                     <div className='space-y-4 !mt-0 w-full pl-2'>
-                                        <p>A Protoo <code>Peer</code> represents a client connected to a Protoo <code>Room</code>.</p>
+                                        <p>A Protoo <code>Peer</code> represents a client connected to a Protoo <code>Room</code>. The concept of a <code>Peer</code> exists on both the Protoo server and the Protoo client.</p>
+                                        <p>Protoo <code>Peer</code>s can:</p>
+                                        <ul className='list-disc ml-4 !mt-0'>
+                                            <li>
+                                                <p>Send requests from the client to the Protoo signaling server via <code>Peer.request(method, [data])</code></p>
+                                                <ul className='list-disc ml-4'>
+                                                    <li>The server <i>will</i> send a response to a request.</li>
+                                                    <li>The Hubs client sends many kinds of requests to the Protoo signaling server. For example, the client will send a "join" request to the Protoo server when initially joining a Dialog <code>Room</code>.</li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <p>Send notifications from the client to the Protoo signaling server via <code>Peer.notify(method, [data])</code></p>
+                                                <ul className='list-disc ml-4'>
+                                                    <li>The server <i>will not</i> send a response to a notification.</li>
+                                                    <li>The Hubs <i>client</i> does not currently send any notifications, although the Dialog <i>server</i> sends notifications to connected <code>Peer</code>s. For example, the server will send a "peerClosed" notification to all other connected <code>Peer</code>s when a Protoo peer's connection closes.</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
 
                                         <div className='!mt-2 p-4 rounded-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
                                             <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
