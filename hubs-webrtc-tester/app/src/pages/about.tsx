@@ -92,7 +92,7 @@ const AboutPage = ({ }) => {
                 </div>
 
                 <div className='mt-4 pt-4 w-full space-y-4'>
-                    <h2 id="communication-data-flow" className='text-3xl font-semibold hover:underline'><a href="#communication-data-flow">Communication Data Flow</a></h2>
+                    <h2 id="communication-data-flow" className='text-3xl font-semibold hover:underline'><a href="#communication-data-flow">WebRTC Communication Data Flow</a></h2>
                     <Divider className='!mt-1' />
                     <p>When two people video chat using a WebRTC-based application, Person A's voice and video data must somehow be transmitted over the Internet and received by Person B.</p>
                     <p>The simplest architecture for sending and receiving this data is for Person A's client to send that data directly to Person B's client. This architecture is called "Peer to Peer" communication.</p>
@@ -232,7 +232,7 @@ const AboutPage = ({ }) => {
                                 <div className='!mt-1 flex w-full'>
                                     <div className='bg-slate-200 dark:bg-neutral-500 shrink-0 w-[2px] rounded-md' />
                                     <div className='space-y-4 !mt-0 w-full pl-2'>
-                                        <p>A <code>WebSocketTransport</code> is a JavaScript class that, when instantiated, attempts to open a WebSocket connection to a specified URL.</p>
+                                        <p>A <code>WebSocketTransport</code> is a JavaScript class that, when instantiated from the client, attempts to open a WebSocket connection to a specified URL.</p>
 
                                         <div className='!mt-2 p-4 rounded-md bg-green-50 dark:bg-green-800/20 relative'>
                                             <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
@@ -261,7 +261,7 @@ const AboutPage = ({ }) => {
 }`
                                                     }
                                                 </SyntaxHighlighter>
-                                                <p><span className="font-semibold">Translation:</span> Open a new WebSocket connection to a "URL with params" we've dynamically constructed based on the specific Hub to which we're connected.</p>
+                                                <p><span className="font-semibold">Translation:</span> Open a new WebSocket connection to a "URL with params" we've dynamically constructed based on the specific Hub to which we're connected. If the connection fails, attempt to retry two more times before closing the WebSocket connection.</p>
                                                 <p>We can obtain an example of such a "URL with params" by connecting to <a className='underline' target="_blank" href='https://hubs.mozilla.com/E4e8oLx/hubs-demo-promenade'>the Hubs Demo Promenade<ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a>:</p>
 
                                                 <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
