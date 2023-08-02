@@ -60,7 +60,9 @@ const AboutPage = ({ }) => {
                 <a className='text-sm underline' href='/'>Return to Tester Home</a>
             </header>
 
-            <StaticImage className='mx-auto max-w-md rounded-md' src="../images/header.png" alt="Hubs 💖 WebRTC" quality={100} />
+            <div className='w-full rounded-md animate-gradient flex justify-center' style={{ "background": "linear-gradient(107.97deg,#489cbe 6.73%,#5427c9 39.4%,#a8527c 77.18%,#a67878 104.75%)", "backgroundSize": "250% 250%" }}>
+                <StaticImage className="rounded-md max-w-md" src="../images/header-transparent.png" alt="Hubs 💖 WebRTC" quality={100} />
+            </div>
 
             <div className='space-y-8 w-full'>
                 <div className='mt-4 pt-4'>
@@ -79,6 +81,7 @@ const AboutPage = ({ }) => {
                         <li>Understand how WebRTC-based applications transmit and receive voice and video data</li>
                         <li>Learn which software libraries are used to power Hubs' WebRTC stack</li>
                         <li>Learn how those software libraries are used in Hubs <i>(including code snippets!)</i></li>
+                        <li>Learn the answers to <a className="underline" href="#faq">frequently asked questions</a></li>
                     </ul>
                 </div>
 
@@ -183,6 +186,8 @@ const AboutPage = ({ }) => {
                             </div>
                         </div>
                     </div>
+
+                    <p>There is a third mainstream architecture for WebRTC communication, and it involves using an "MCU," or Multipoint Control Unit. If you'd like to learn about this architecture, check out <a className='underline' target="_blank" href='hhttps://www.digitalsamba.com/blog/p2p-sfu-and-mcu-webrtc-architectures-explained'>this article on digitalsamba.com<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>.</p>
 
                     <p>The Dialog SFU and the WebRTC parts of the Hubs client make significant use of two software libraries: Protoo and Mediasoup. Let's explore what those libraries do, why they're important, and how they're used.</p>
                 </div>
@@ -383,6 +388,142 @@ const AboutPage = ({ }) => {
                             </div>
                         </div>
                     </div>
+
+                    <div className='!mt-8 space-y-4'>
+                        <h3 id="mediasoup-glossary" className='font-semibold text-2xl'><a className="hover:underline" href="#mediasoup-glossary">Mediasoup - Glossary and Usage</a></h3>
+                        <Divider className='!mt-1' />
+                        <div className='!mt-2 w-full rounded-md flex justify-center p-4 bg-[#040721]' >
+                            <StaticImage height={72} src='../images/mediasoup.png' quality={100} alt="The Mediasoup logo" />
+                        </div>
+                        <p>The authors of the Mediasoup library - who are the same as the authors of the Protoo library - have chosen specific names to refer to SFU-related concepts. In this section, we'll define some of Mediasoup's relevant concepts and explore how they're used in Hubs code.</p>
+
+                        <div className='!mt-2 p-4 rounded-md bg-green-50 dark:bg-green-800/20 relative'>
+                            <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
+                                <AcademicCapIcon className='text-green-300 dark:text-green-600/40 opacity-50' />
+                            </div>
+                            <div className='z-10 relative space-y-2'>
+                                <p><span className='font-semibold'>As we discuss Mediasoup concepts,</span> note the fact that Protoo doesn't have the concept of "audio/video media," and Mediasoup doesn't have the concept of <code>Room</code>s or <code>Peer</code>s. Those concepts come together in Dialog and in the client's Dialog Adapter.</p>
+                            </div>
+                        </div>
+
+                        <div className='!mt-4 space-y-6'>
+                            <div>
+                                <h4 id="mediasoup-producer"><a href="#mediasoup-producer" className='hover:underline font-semibold text-xl'>Mediasoup <code>Producer</code></a></h4>
+                                <div className='!mt-0'>
+                                <a className='underline text-xs' target="_blank" href='https://mediasoup.org/documentation/v3/mediasoup-client/api/#Producer'><code>(mediasoup client docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a> <a className='underline text-xs' target="_blank" href='https://mediasoup.org/documentation/v3/mediasoup/api/#Producer'><code>(mediasoup server docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a>
+                                </div>
+                                <div className='!mt-2 flex w-full'>
+                                    <div className='bg-blue-200 dark:bg-blue-900 shrink-0 w-[2px] rounded-md' />
+                                    <div className='space-y-4 !mt-0 w-full pl-2'>
+                                        <div>
+                                            <h5 id="mediasoup-producer-client" className="text-lg font-semibold"><a className='hover:underline' href="#mediasoup-producer-client"><code>Producer</code> - Client Context</a></h5>
+                                            <Divider className='!mt-1' />
+                                            <p>In the <i>client</i> context, a Mediasoup <code>Producer</code> is a JavaScript class that <span className="font-semibold">represents an audio or video source to be transmitted to and injected into</span> a server-side Mediasoup <code>Router</code>.</p>
+                                            <p><code>Producer</code>s are contained within <code>Transport</code>s, which define how the media packets are carried.</p>
+
+                                            <div className='!mt-2 p-4 rounded-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
+                                                <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
+                                                    <CodeBracketIcon className='text-slate-300 dark:text-slate-200/40 opacity-50' />
+                                                </div>
+                                                <div className='z-10 relative space-y-2 w-full'>
+                                                    <p className='font-semibold'><code>Producer</code> Example Usage - Client Context</p>
+                                                    <p>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/hubs/blob/master/src/naf-dialog-adapter.js'>hubs/naf-dialog-adapter.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; DialogAdapter &gt; setLocalMediaStream()</code>:</p>
+                                                    <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
+                                                        {`async setLocalMediaStream(stream) {
+    if (!this._sendTransport) {
+        console.error("...");
+        return;
+    }
+    ...
+    await Promise.all(
+        stream.getTracks().map(async track => {
+            if (track.kind === "audio") {
+                ...
+                if (this._micProducer) {
+                    ...
+                } else {
+                    this._micProducer = await this._sendTransport.produce({
+                        track,
+                        ...
+                    });
+                    ...
+                }
+            }
+        })
+    )
+}`
+                                                        }
+                                                    </SyntaxHighlighter>
+                                                    <p><span className="font-semibold">Translation:</span> <code>setLocalMediaStream()</code> is called by the client in a few cases, including when the client first joins a Dialog room, and when the client's audio input device changes. The <code>stream</code> variable passed to the function is <a className='underline' target="_blank" href='https://developer.mozilla.org/en-US/docs/Web/API/MediaStream'>a <code>MediaStream</code> object<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>, such as that returned by <a className='underline' target="_blank" href='https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia'><code>getUserMedia()</code><ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a></p>
+                                                    <p>First, we must make sure we've already created a "Send Transport" locally. This <code>Transport</code> is created when initially joining a Dialog Room.</p>
+                                                    <p><code>await Promise.all(...)</code> means "fulfill this one Promise when all of the passed Promises have fulfilled, or reject this one Promise when any one of the passed Promises has rejected."</p>
+                                                    <p>Next, we split the input <code>stream</code> into its constituent <code>track</code>s, which are of type <a className='underline' target="_blank" href='https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack'><code>MediaStreamTrack</code><ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>. In most cases, the <code>MediaStream</code> associated with a person's audio input device consists of just one track.</p>
+                                                    <p>If the "kind" of track we're processing is an <code>"audio"</code> track (as opposed to a <code>"video"</code> track), and we've previously created a Mediasoup <code>Producer</code>, we execute a special case of code.</p>
+                                                    <p>However, if this is an <code>"audio"</code> track and this is the first time we're producing, we have to create a new <code>Producer</code> by calling <code>this._sendTransport.produce()</code>. Calling this function tells the <code>Transport</code> to begin sending the specified audio track to the remote Mediasoup <code>Router</code> as per the specified options.</p>
+                                                    <p>We can later pause, resume, and close the resultant <code>Producer</code>.</p>
+                                                    <p><span className='font-semibold'>Critically, none of the Mediasoup-related code above has anything to do with signaling</span> (which is handled by Protoo). This signaling component is necessary for getting the media stream from Peer A to all other clients connected to a Dialog Room. Let's quickly follow through the client side of that signaling piece here:</p>
+                                                    <p>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/hubs/blob/master/src/naf-dialog-adapter.js'>hubs/naf-dialog-adapter.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; DialogAdapter &gt; createSendTransport()</code>:</p>
+                                                    <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
+                                                        {`this._sendTransport.on("produce", async ({ kind, rtpParameters, appData }, callback, errback) => {
+    ...
+    try {
+        const { id } = await this._protoo.request("produce", {
+            transportId: this._sendTransport.id,
+            kind,
+            rtpParameters,
+            appData
+        });
+        callback({ id });
+    } catch (error) {
+        ...
+        errback(error);
+    }
+});`
+                                                        }
+                                                    </SyntaxHighlighter>
+                                                    <p>This code snippet says: "When the <code>_sendTransport</code> starts producing, let the signaling server know that this client has started producing. Below, as we discuss the server-side <code>Producer</code>, we'll make sense of what that means.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h5 id="mediasoup-producer-server" className="text-lg font-semibold"><a className='hover:underline' href="#mediasoup-producer-server"><code>Producer</code> - Server Context</a></h5>
+                                            <Divider className='!mt-1' />
+                                            <p>In the <i>server</i> context, a Mediasoup <code>Producer</code> is a JavaScript class that <span className="font-semibold">represents an audio or video source being injected into</span> a server-side Mediasoup <code>Router</code>.</p>
+                                            <p><code>Producer</code>s are contained within <code>Transport</code>s, which define how the media packets are carried.</p>
+
+                                            <div className='!mt-2 p-4 rounded-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
+                                                <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
+                                                    <CodeBracketIcon className='text-slate-300 dark:text-slate-200/40 opacity-50' />
+                                                </div>
+                                                <div className='z-10 relative space-y-2 w-full'>
+                                                    <p className='font-semibold'><code>Producer</code> Example Usage - Server Context</p>
+                                                    <p>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/hubs/blob/master/src/naf-dialog-adapter.js'>hubs/naf-dialog-adapter.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; DialogAdapter &gt; connect()</code>:</p>
+                                                    <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
+                                                        {`connect() {
+...
+const protooTransport = new protooClient.WebSocketTransport(urlWithParams.toString(), {
+retry: { retries: 2 }
+});
+...
+}`
+                                                        }
+                                                    </SyntaxHighlighter>
+                                                    <p><span className="font-semibold">Translation:</span> Open a new WebSocket connection to a "URL with params" we've dynamically constructed based on the specific Hub to which we're connected. If the connection fails, attempt to retry two more times before closing the WebSocket connection.</p>
+                                                    <p>We can obtain an example of such a "URL with params" by connecting to <a className='underline' target="_blank" href='https://hubs.mozilla.com/E4e8oLx/hubs-demo-promenade'>the Hubs Demo Promenade<ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a>:</p>
+
+                                                    <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
+                                                        {`const urlWithParams = 'wss://geyc4mjogaxdenl4guya.stream.reticulum.io:4443/?roomId=E4e8oLx&peerId=fd25a9c5-ee56-4be8-ad8c-ba44d9247b82'`}
+                                                    </SyntaxHighlighter>
+
+                                                    <p>The resultant <code>protooTransport</code> variable will be reused when creating a client-side Protoo <a className="underline" href="#protoo-peer"><code>Peer</code></a>.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -393,6 +534,14 @@ const AboutPage = ({ }) => {
 
 
 
+
+                <div className='mt-4 pt-4 w-full space-y-4'>
+                    <h2 id="faq" className='text-2xl font-semibold hover:underline'><a href="#faq">Frequently Asked Questions</a></h2>
+                    <Divider className='!mt-1' />
+                    <div>
+                        <h3 id="faq-spatialized" className='text-xl font-semibold'><a className="hover:underline" href="#faq-spatialized">My Hubs client is consuming the audio streams associated with remote peers. How are those audio streams spatialized for 3D sound?</a></h3>
+                    </div>
+                </div>
 
 
 
