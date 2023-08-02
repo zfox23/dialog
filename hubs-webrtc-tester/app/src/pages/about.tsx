@@ -221,9 +221,9 @@ const AboutPage = ({ }) => {
                     </ul>
 
                     <div className='!mt-8 space-y-4'>
-                        <h3 id="protoo-glossary" className='font-semibold text-2xl'><a className="hover:underline" href="#protoo-glossary">Protoo - Glossary and Usage</a></h3>
+                        <h3 id="protoo-glossary" className='font-semibold text-2xl'><a className="hover:underline" href="#protoo-glossary">Protoo Signaling - Glossary and Usage</a></h3>
                         <Divider className='!mt-1' />
-                        <div className='!mt-2 w-full rounded-md flex justify-center p-4 bg-[rgb(91,49,48)]' >
+                        <div className='!mt-2 w-full rounded-md flex justify-center p-4 animate-gradient' style={{ "background": "linear-gradient(331deg, rgba(91,49,48,1) 0%, rgba(177,53,39,1) 45%, rgba(157,65,52,1) 100%)", "backgroundSize": "400% 400%" }} >
                             <StaticImage height={72} src='../images/protoo.png' quality={100} alt="The Protoo logo" />
                         </div>
                         <p>The authors of the Protoo library have chosen specific names to refer to signaling-related concepts. In this section, we'll define some of Protoo's relevant concepts and explore how they're used in Hubs code.</p>
@@ -390,9 +390,9 @@ const AboutPage = ({ }) => {
                     </div>
 
                     <div className='!mt-8 space-y-4'>
-                        <h3 id="mediasoup-glossary" className='font-semibold text-2xl'><a className="hover:underline" href="#mediasoup-glossary">Mediasoup - Glossary and Usage</a></h3>
+                        <h3 id="mediasoup-glossary" className='font-semibold text-2xl'><a className="hover:underline" href="#mediasoup-glossary">Mediasoup SFU - Glossary and Usage</a></h3>
                         <Divider className='!mt-1' />
-                        <div className='!mt-2 w-full rounded-md flex justify-center p-4 bg-[#040721]' >
+                        <div className='!mt-2 w-full rounded-md flex justify-center p-4 animate-gradient' style={{ "background": "linear-gradient(331deg, rgba(6,10,42,1) 0%, rgba(47,56,126,1) 48%, rgba(35,41,85,1) 100%)", "backgroundSize": "400% 400%" }} >
                             <StaticImage height={72} src='../images/mediasoup.png' quality={100} alt="The Mediasoup logo" />
                         </div>
                         <p>The authors of the Mediasoup library - who are the same as the authors of the Protoo library - have chosen specific names to refer to SFU-related concepts. In this section, we'll define some of Mediasoup's relevant concepts and explore how they're used in Hubs code.</p>
@@ -402,7 +402,7 @@ const AboutPage = ({ }) => {
                                 <AcademicCapIcon className='text-green-300 dark:text-green-600/40 opacity-50' />
                             </div>
                             <div className='z-10 relative space-y-2'>
-                                <p><span className='font-semibold'>As we discuss Mediasoup concepts,</span> note the fact that Protoo doesn't have the concept of "audio/video media," and Mediasoup doesn't have the concept of <code>Room</code>s or <code>Peer</code>s. Those concepts come together in Dialog and in the client's Dialog Adapter.</p>
+                                <p><span className='font-semibold'>As we discuss Mediasoup concepts,</span> note that Protoo doesn't have the concept of "audio/video media," and Mediasoup doesn't have the concept of <code>Room</code>s or <code>Peer</code>s. Those concepts come together in Dialog and in the client's Dialog Adapter.</p>
                             </div>
                         </div>
 
@@ -410,7 +410,7 @@ const AboutPage = ({ }) => {
                             <div>
                                 <h4 id="mediasoup-producer"><a href="#mediasoup-producer" className='hover:underline font-semibold text-xl'>Mediasoup <code>Producer</code></a></h4>
                                 <div className='!mt-0'>
-                                <a className='underline text-xs' target="_blank" href='https://mediasoup.org/documentation/v3/mediasoup-client/api/#Producer'><code>(mediasoup client docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a> <a className='underline text-xs' target="_blank" href='https://mediasoup.org/documentation/v3/mediasoup/api/#Producer'><code>(mediasoup server docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a>
+                                    <a className='underline text-xs' target="_blank" href='https://mediasoup.org/documentation/v3/mediasoup-client/api/#Producer'><code>(mediasoup client docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a> <a className='underline text-xs' target="_blank" href='https://mediasoup.org/documentation/v3/mediasoup/api/#Producer'><code>(mediasoup server docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a>
                                 </div>
                                 <div className='!mt-2 flex w-full'>
                                     <div className='bg-blue-200 dark:bg-blue-900 shrink-0 w-[2px] rounded-md' />
@@ -481,7 +481,7 @@ const AboutPage = ({ }) => {
 });`
                                                         }
                                                     </SyntaxHighlighter>
-                                                    <p>This code snippet says: "When the <code>_sendTransport</code> starts producing, let the signaling server know that this client has started producing. Below, as we discuss the server-side <code>Producer</code>, we'll make sense of what that means.</p>
+                                                    <p>This code snippet says: "When the Mediasoup <code>_sendTransport</code> starts producing, let the Protoo signaling server know that this client has started producing." Below, as we discuss the server-side <code>Producer</code>, we'll make more sense of what that means.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -497,25 +497,46 @@ const AboutPage = ({ }) => {
                                                 </div>
                                                 <div className='z-10 relative space-y-2 w-full'>
                                                     <p className='font-semibold'><code>Producer</code> Example Usage - Server Context</p>
-                                                    <p>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/hubs/blob/master/src/naf-dialog-adapter.js'>hubs/naf-dialog-adapter.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; DialogAdapter &gt; connect()</code>:</p>
+                                                    <p>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/dialog/blob/master/lib/Room.js'>dialog/lib/Room.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; Room &gt; _handleProtooRequest()</code>:</p>
                                                     <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
-                                                        {`connect() {
-...
-const protooTransport = new protooClient.WebSocketTransport(urlWithParams.toString(), {
-retry: { retries: 2 }
-});
-...
+                                                        {`async _handleProtooRequest(peer, request, accept, reject) {
+    const router = this._mediasoupRouters.get(peer.data.routerId);
+    switch (request.method) {
+        ...
+        case 'produce':
+            ...
+            const producer = await transport.produce(
+                {
+                    kind,
+                    rtpParameters,
+                    appData
+                    // keyFrameRequestDelay: 5000
+                });
+            for (const [ routerId, targetRouter ] of this._mediasoupRouters)
+            {
+                ...
+                await router.pipeToRouter({
+                    producerId : producer.id,
+                    router     : targetRouter
+                });
+            }
+            peer.data.producers.set(producer.id, producer);
+            ...
+            for (const otherPeer of this._getJoinedPeers({ excludePeer: peer }))
+            {
+                this._createConsumer(
+                    {
+                        consumerPeer : otherPeer,
+                        producerPeer : peer,
+                        producer
+                    });
+            }
+            break;
+    }
 }`
                                                         }
                                                     </SyntaxHighlighter>
-                                                    <p><span className="font-semibold">Translation:</span> Open a new WebSocket connection to a "URL with params" we've dynamically constructed based on the specific Hub to which we're connected. If the connection fails, attempt to retry two more times before closing the WebSocket connection.</p>
-                                                    <p>We can obtain an example of such a "URL with params" by connecting to <a className='underline' target="_blank" href='https://hubs.mozilla.com/E4e8oLx/hubs-demo-promenade'>the Hubs Demo Promenade<ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a>:</p>
-
-                                                    <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
-                                                        {`const urlWithParams = 'wss://geyc4mjogaxdenl4guya.stream.reticulum.io:4443/?roomId=E4e8oLx&peerId=fd25a9c5-ee56-4be8-ad8c-ba44d9247b82'`}
-                                                    </SyntaxHighlighter>
-
-                                                    <p>The resultant <code>protooTransport</code> variable will be reused when creating a client-side Protoo <a className="underline" href="#protoo-peer"><code>Peer</code></a>.</p>
+                                                    <p><span className="font-semibold">Translation:</span> </p>
                                                 </div>
                                             </div>
                                         </div>
