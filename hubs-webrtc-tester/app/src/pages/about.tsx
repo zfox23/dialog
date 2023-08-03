@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Layout } from '../components/Layout';
-import { AcademicCapIcon, ArrowTopRightOnSquareIcon, CodeBracketIcon, HandThumbDownIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
+import { AcademicCapIcon, ArrowTopRightOnSquareIcon, ChevronRightIcon, CodeBracketIcon, HandThumbDownIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
+import { BookmarkIcon } from '@heroicons/react/24/outline';
 import { ExclamationTriangleIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid';
 import { StaticImage } from "gatsby-plugin-image";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import Divider from '../components/Divider';
 import { useEventListenerWindow } from '../hooks/useEventListener';
-import { isDarkThemeEnabled } from '../components/ToggleThemeSwitch';
+import { ThemeToggleSwitch, isDarkThemeEnabled } from '../components/ToggleThemeSwitch';
+import { Menu, Transition } from '@headlessui/react';
 
 const useHeadings = () => {
     interface Headings {
@@ -37,8 +39,8 @@ const TableOfContents = ({ className }: { className?: string }) => {
         <nav className={className}>
             <ul>
                 {headings.map(heading => (
-                    <li key={heading.id} className='hover:underline' style={{ marginLeft: `${heading.level - 2}em` }}>
-                        <a href={`#${heading.id}`} > {heading.text} </a>
+                    <li key={heading.id} style={{ marginLeft: `${heading.level - 2}em` }}>
+                        <a className='hover:underline' href={`#${heading.id}`} > {heading.text} </a>
                     </li>
                 ))}
             </ul>
@@ -59,6 +61,42 @@ const AboutPage = ({ }) => {
                 <h1 className='text-4xl font-semibold'>How Mozilla Hubs Uses WebRTC</h1>
                 <a className='text-sm underline' href='/'>Return to Tester Home</a>
             </header>
+
+            <div className='flex fixed z-40 top-3 right-0 flex-col items-end transition-colors'>
+                <Menu>
+                    {({ open }) => (
+                        <>
+                            <Menu.Button tabIndex={0} className={`p-2 w-12 h-12 z-20 bg-slate-200/95 dark:bg-neutral-700/95 text-neutral-600 dark:text-slate-50 ${open ? 'rounded-tl-md' : 'rounded-l-md'}`}>
+                                {open ?
+                                    <ChevronRightIcon /> :
+                                    <BookmarkIcon />}
+                            </Menu.Button>
+                            <Transition
+                                className='max-h-96 overflow-y-auto max-w-sm bg-slate-100 dark:bg-neutral-800 border-slate-200 dark:border-neutral-700 border-solid border-2 border-r-0 shadow-lg p-2 rounded-l-md'
+                                enter="transition duration-250 ease-out"
+                                enterFrom="transform translate-x-full opacity-0"
+                                enterTo="transform translate-x-0 opacity-100"
+                                leave="transition duration-200 ease-out"
+                                leaveFrom="transform translate-x-0 opacity-100"
+                                leaveTo="transform translate-x-full opacity-0"
+                            >
+                                <Menu.Items>
+                                    <Menu.Item>
+                                        <>
+                                        <div className='flex justify-between'>
+                                            <h2 className='font-semibold text-2xl'>Navigation</h2>
+                                            <ThemeToggleSwitch />
+                                        </div>
+                                        <Divider className='mb-2' />
+                                        <TableOfContents className='w-full' />
+                                        </>
+                                    </Menu.Item>
+                                </Menu.Items>
+                            </Transition>
+                        </>
+                    )}
+                </Menu>
+            </div>
 
             <div className='w-full rounded-md animate-gradient flex justify-center' style={{ "background": "linear-gradient(107.97deg,#489cbe 6.73%,#5427c9 39.4%,#a8527c 77.18%,#a67878 104.75%)", "backgroundSize": "250% 250%" }}>
                 <StaticImage className="rounded-md max-w-md" src="../images/header-transparent.png" alt="Hubs 💖 WebRTC" quality={100} />
@@ -226,7 +264,8 @@ const AboutPage = ({ }) => {
                         <div className='!mt-2 w-full rounded-md flex justify-center p-4 animate-gradient' style={{ "background": "linear-gradient(331deg, rgba(91,49,48,1) 0%, rgba(177,53,39,1) 45%, rgba(157,65,52,1) 100%)", "backgroundSize": "400% 400%" }} >
                             <StaticImage height={72} src='../images/protoo.png' quality={100} alt="The Protoo logo" />
                         </div>
-                        <p>The authors of the Protoo library have chosen specific names to refer to signaling-related concepts. In this section, we'll define some of Protoo's relevant concepts and explore how they're used in Hubs code.</p>
+                        <p>The authors of the Protoo library have chosen specific names to refer to signaling-related concepts. In this section, we'll define some of Protoo's relevant concepts and verbosely explore how they're used in Hubs code.</p>
+                        <p>Directly below each term's heading, you'll find links to Protoo's official documentation relevant to that term.</p>
 
                         <div className='!mt-4 space-y-6'>
                             <div>
@@ -395,7 +434,8 @@ const AboutPage = ({ }) => {
                         <div className='!mt-2 w-full rounded-md flex justify-center p-4 animate-gradient' style={{ "background": "linear-gradient(331deg, rgba(6,10,42,1) 0%, rgba(47,56,126,1) 48%, rgba(35,41,85,1) 100%)", "backgroundSize": "400% 400%" }} >
                             <StaticImage height={72} src='../images/mediasoup.png' quality={100} alt="The Mediasoup logo" />
                         </div>
-                        <p>The authors of the Mediasoup library - who are the same as the authors of the Protoo library - have chosen specific names to refer to SFU-related concepts. In this section, we'll define some of Mediasoup's relevant concepts and explore how they're used in Hubs code.</p>
+                        <p>The authors of the Mediasoup library - who are the same as the authors of the Protoo library - have chosen specific names to refer to SFU-related concepts. In this section, we'll define some of Mediasoup's relevant concepts and verbosely explore how they're used in Hubs code.</p>
+                        <p>Directly below each term's heading, you'll find links to Mediasoup's official documentation relevant to that term.</p>
 
                         <div className='!mt-2 p-4 rounded-md bg-green-50 dark:bg-green-800/20 relative'>
                             <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
@@ -505,16 +545,20 @@ const AboutPage = ({ }) => {
         ...
         case 'produce':
             ...
+            const transport = peer.data.transports.get(transportId);
+            if (!transport)
+                throw new Error('...');
+            ...
             const producer = await transport.produce(
                 {
                     kind,
-                    rtpParameters,
-                    appData
-                    // keyFrameRequestDelay: 5000
+                    ...
                 });
             for (const [ routerId, targetRouter ] of this._mediasoupRouters)
             {
-                ...
+                if (routerId === peer.data.routerId) {
+                    continue;
+                }
                 await router.pipeToRouter({
                     producerId : producer.id,
                     router     : targetRouter
@@ -536,7 +580,13 @@ const AboutPage = ({ }) => {
 }`
                                                         }
                                                     </SyntaxHighlighter>
-                                                    <p><span className="font-semibold">Translation:</span> </p>
+                                                    <p><span className="font-semibold">Translation:</span> <code>_handleProtooRequest()</code> is called on the Dialog server when a Protoo signaling request is received. Dialog will always formulate and send a response to Protoo requests.</p>
+                                                    <p>When the Dialog server receives a Protoo signaling request with method <code>"produce"</code> - as will occur when a Peer begins producing media from the client - we'll run the code above within the <code>switch</code> statement.</p>
+                                                    <p>First, the Dialog server must obtain the "Send Transport" it previously created and stored associated with this Peer. This <code>Transport</code> was created at the client's signaling request when the client joined the Dialog room. If we don't find that Send Transport, we fail and return early.</p>
+                                                    <p>We then create a new <code>Producer</code> on the server associated with that Send <code>Transport</code>.</p>
+                                                    <p>In the current iteration of Hubs and Dialog, there's only ever a single element in the <code>this._mediasoupRouters</code> Map. So, we will never pipe any data between <code>Router</code>s; we'll hit that <code>continue</code> statement.</p>
+                                                    <p>Dialog then keeps track of the <code>Producer</code> objects associated with a given Protoo <code>Peer</code>'s ID in a <code>Map</code>. This is necessary for pausing, resuming, and closing that <code>Producer</code> later.</p>
+                                                    <p>We then create Dialog <code>Consumer</code>s on the server associated with every <i>other</i> <code>Peer</code> who is marked as having joined the Dialog room. <span className='font-semibold'>We'll learn about <code>Consumer</code>s below.</span></p>
                                                 </div>
                                             </div>
                                         </div>
