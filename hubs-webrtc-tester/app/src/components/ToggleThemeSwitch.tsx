@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Switch } from '@headlessui/react';
 import { twMerge } from 'tailwind-merge';
 import { MoonIcon, SunIcon } from '@heroicons/react/24/solid';
+import { useEventListenerWindow } from '../hooks/useEventListener';
 const isBrowser = typeof window !== "undefined";
 
 export const isDarkThemeEnabled = () => {
@@ -35,6 +36,10 @@ export const enableDarkTheme = (enabled, save = true) => {
 
 export const ThemeToggleSwitch = ({ isLarge = false, className = "" }) => {
     const [darkThemeEnabled, setDarkThemeEnabled] = useState(isDarkThemeEnabled());
+
+    useEventListenerWindow("darkThemeChanged", (evt) => {
+        setDarkThemeEnabled(evt.detail);
+    });
 
     const switchTheme = (darkThemeNewlyEnabled) => {
         enableDarkTheme(darkThemeNewlyEnabled);
