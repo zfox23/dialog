@@ -9,7 +9,7 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        gradient: 'gradient 12s ease infinite',
+        gradient: 'gradient 10s ease infinite',
       },
       keyframes: {
         gradient: {

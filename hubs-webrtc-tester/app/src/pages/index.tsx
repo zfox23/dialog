@@ -43,7 +43,7 @@ const IndexPage = ({ }) => {
             reticulumHubID: hubID,
             reticulumSessionID: sessionID
         }
-        
+
         try {
             await dialogAdapter.connectToDialog({
                 dialogConnectionParams,
@@ -61,15 +61,17 @@ const IndexPage = ({ }) => {
 
     return (
         <Layout>
-            <HeaderPanel />
+            <div className='flex flex-col w-full items-center p-2 md:p-4'>
+                <HeaderPanel />
 
-            <ConnectDisconnectPanel onConnectClicked={onConnectClicked} onDisconnectClicked={onDisconnectClicked} dialogHost={dialogHost} setDialogHost={setDialogHost} dialogPort={dialogPort} setDialogPort={setDialogPort} hubID={hubID} setHubID={setHubID} sessionID={sessionID} setSessionID={setSessionID} />
+                <ConnectDisconnectPanel onConnectClicked={onConnectClicked} onDisconnectClicked={onDisconnectClicked} dialogHost={dialogHost} setDialogHost={setDialogHost} dialogPort={dialogPort} setDialogPort={setDialogPort} hubID={hubID} setHubID={setHubID} sessionID={sessionID} setSessionID={setSessionID} />
 
-            <AudioInputOutputPanel dialogAdapter={dialogAdapter} />
+                <AudioInputOutputPanel dialogAdapter={dialogAdapter} />
 
-            <LogPanel />
+                <LogPanel />
 
-            <RemoteAudioStreamsPanel dialogAdapter={dialogAdapter} />
+                <RemoteAudioStreamsPanel dialogAdapter={dialogAdapter} />
+            </div>
         </Layout>
     )
 }

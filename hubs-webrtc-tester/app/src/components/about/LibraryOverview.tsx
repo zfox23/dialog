@@ -4,8 +4,8 @@ import { AcademicCapIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/
 
 export const LibraryOverview = ({ }) => {
     return (
-        <div>
-            <h2 id="hubs-webrtc-libraries" className='text-3xl font-semibold hover:underline'><a href="#hubs-webrtc-libraries">Hubs' WebRTC Libraries</a></h2>
+        <div className='space-y-4 w-full max-w-4xl'>
+            <h2 id="hubs-webrtc-libraries" className='text-3xl font-semibold'><a href="#hubs-webrtc-libraries" className='hover:underline'>Hubs' WebRTC Libraries</a></h2>
             <h3 className='text-sm !mt-0'>Protoo and Mediasoup</h3>
             <Divider className='!mt-1' />
             <p>While it is possible for developers to write code using <a className='underline' target="_blank" href='https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API'>the bare WebRTC protocols and APIs<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>, it is often useful to simplify app development by using well-tested software libraries that abstract away some of those core concepts.</p>
@@ -30,6 +30,8 @@ export const LibraryOverview = ({ }) => {
                 <li><p><a className='underline font-semibold' target="_blank" href='https://protoo.versatica.com/#protoo-client'>protoo-client<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> - "The protoo client side JavaScript library. It runs in both browser and Node.js environments."</p></li>
                 <li><p><a className='underline font-semibold' target="_blank" href='https://mediasoup.org/documentation/v3/mediasoup-client/'>mediasoup-client<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> - A "Client side JavaScript library for browsers and Node.js clients."</p></li>
             </ul>
+
+            <Divider />
         </div>
     )
 }

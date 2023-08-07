@@ -58,7 +58,7 @@ export const LogPanel = ({ }) => {
     }, [])
 
     return (
-        <div className='flex flex-col mb-8 w-full bg-slate-200 dark:bg-neutral-900 rounded-md items-center border-b-4 border-blue-300 dark:border-indigo-800'>
+        <div className='flex flex-col mb-8 w-full max-w-4xl bg-slate-200 dark:bg-neutral-900 rounded-md items-center border-b-4 border-blue-300 dark:border-indigo-800'>
             <div className='flex gap-1 w-full justify-center bg-blue-300/40 dark:bg-indigo-900 rounded-t-md p-2'>
                 <h2 className='font-semibold text-xl h-8'>{<ExclamationTriangleIcon className='w-6 h-6 inline-block mr-1 relative' />}Tester Logs</h2>
                 <button className='transition-all opacity-90 hover:opacity-100' onClick={e => { localStorage.setItem('logsExpanded', (!logsExpanded).toString()); setLogsExpanded(!logsExpanded); }}>
