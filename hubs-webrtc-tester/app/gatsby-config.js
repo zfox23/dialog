@@ -8,5 +8,6 @@ module.exports = {
     proxy: {
       prefix: "/api",
       url: "http://localhost:6381"
-    }
+    },
+    pathPrefix: `/hubs-webrtc-tester`
   };
