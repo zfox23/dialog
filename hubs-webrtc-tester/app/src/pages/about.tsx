@@ -99,6 +99,7 @@ const AboutPage = ({ }) => {
                     <div className='z-10 relative space-y-4'>
                         <p><span className='font-semibold'>Your feedback is very important to me!</span> Please leave @ZachAtMozilla questions and comments about this document via Discord DM or <a className='underline' target="_blank" href='https://discord.com/invite/sBMqSjCndj'>the "🔒private-dev" channel on the Hubs Discord server<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>. Your feedback will help improve this page.</p>
                         <p><span className='font-semibold'>This page is actively under construction.</span> Language, layout, and contents are subject to change at any time.</p>
+                        <p className='font-semibold'>This page's source is currently available <a className='underline' target="_blank" href='https://github.com/zfox23/dialog/tree/hubs-webrtc-tester/hubs-webrtc-tester'>here on GitHub<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>.</p>
                     </div>
                 </div>
 
