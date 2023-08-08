@@ -307,8 +307,155 @@ const Consumer = ({ darkThemeEnabled }) => {
             <div className='!mt-2 flex w-full'>
                 <div className='bg-blue-200 dark:bg-blue-900 shrink-0 w-[2px] rounded-md' />
                 <div className='space-y-4 !mt-0 w-full pl-2'>
-                    <MediasoupSFUConsumerServer darkThemeEnabled={darkThemeEnabled} />
                     <MediasoupSFUConsumerClient darkThemeEnabled={darkThemeEnabled} />
+                    <MediasoupSFUConsumerServer darkThemeEnabled={darkThemeEnabled} />
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const MediasoupSFUTransport = ({ darkThemeEnabled }) => {
+    return (
+        <div className='w-full space-y-2'>
+            <p>In <i>both</i> the client and server contexts, a Mediasoup <code>Transport</code> is a JavaScript class that uses the network to <span className="font-semibold">connect a client-side Mediasoup Device to a server-side Mediasoup Router</span>. A Transport enables sending media via a Producer or receving media via a Consumer, but not both at the same time.</p>
+            <p>A Mediasoup Transport makes use of <a className='underline' target="_blank" href='https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection'>the <code>RTCPeerConnection</code> WebRTC interface<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>.</p>
+            <p>In the context of Transports, it's important to understand STUN, TURN, and ICE. For a refresher, <a className='underline' href="#STUN-TURN-and-ICE">tap here to scroll up to the "STUN, TURN, and ICE" section of this document.</a></p>
+
+            <div className='!mt-4 p-4 rounded-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
+                <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
+                    <CodeBracketIcon className='text-slate-300 dark:text-slate-200/40 opacity-50' />
+                </div>
+                <div className='z-10 relative space-y-2 w-full'>
+                    <p className='font-semibold'><code>Transport</code> Example Usage - Client Context</p>
+                    <p>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/hubs/blob/master/src/naf-dialog-adapter.js'>hubs/naf-dialog-adapter.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; DialogAdapter &gt; createSendTransport() &gt; _sendTransport.on("connectionstatechange") callback</code>:</p>
+                    <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
+                        {`this._sendTransport.on("connectionstatechange", connectionState => {
+    //this.checkSendIceStatus(connectionState); (Function call expanded below.)
+    if (connectionState === "failed") {
+        //this.restartSendICE(); (Function call expanded below.)
+        if (!this._protoo || !this._protoo.connected) {
+            return;
+        }
+
+        try {
+            if (!this._sendTransport?._closed) {
+                await this.iceRestart(this._sendTransport);
+            } else {
+                const { host, port, turn } = this._serverParams;
+                const iceServers = this.getIceServers(host, port, turn);
+                await this.recreateSendTransport(iceServers);
+            }
+        } catch (err) {
+            ...
+        }
+    }                       
+});`}
+                    </SyntaxHighlighter>
+                    <p><span className="font-semibold">Translation:</span> The client's <code>this._sendTransport</code> "Send Transport" is responsible for holding the "Mic Producer" and transmitting the audio input data over the network. <a className='underline text-sm' href="#mediasoup-producer-client">(Tap here to scroll up to the Producer example in this document.)</a></p>
+                    <p>This event handler code fires anytime the Send Transport's connection state changes. A Transport's connection state is always one of the following values:</p>
+                    <ul className='ml-4 list-disc'>
+                        <li><code>"closed"</code></li>
+                        <li><code>"failed"</code></li>
+                        <li><code>"disconnected"</code></li>
+                        <li><code>"new"</code></li>
+                        <li><code>"connecting"</code></li>
+                        <li><code>"connected"</code></li>
+                    </ul>
+                    <p>You can find a description for each of these states here: <a className='underline' target="_blank" href='https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/connectionState'><code>MDN/RTCPeerConnection/connectionState</code><ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a></p>
+                    <p>In the case of this code, we're only doing something unique when the Send Transport's connection state changes to "failed." This happens when "one or more of the ICE transports on the connection is in the failed state."</p>
+                    <p><a className='underline' target="_blank" href='https://www.w3.org/TR/webrtc/#dictionary-rtcofferoptions-members'>The WebRTC spec<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> recommends performing an ICE Restart in this case, which is what the above code does in various ways depending on the application's current state.</p>
+                    <p>There may be an opportunity to optimize or improve this particular snippet of source code - connection state changes are a common source of application failure.</p>
+
+                    <p className='!mt-4'>The client-side Dialog adapter sets up a very similar event handler for the Receive Transport, <code>this._recvTransport</code>.</p>
+                </div>
+            </div>
+
+            <div className='!mt-6 p-4 rounded-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
+                <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
+                    <CodeBracketIcon className='text-slate-300 dark:text-slate-200/40 opacity-50' />
+                </div>
+                <div className='z-10 relative space-y-2 w-full'>
+                    <p className='font-semibold'><code>Transport</code> Example Usage - Server Context</p>
+                    <p>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/dialog/blob/master/lib/Room.js'>dialog/lib/Room.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; Room &gt; _handleProtooRequest()</code>:</p>
+                    <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
+                        {`async _handleProtooRequest(peer, request, accept, reject) {
+    const router = this._mediasoupRouters.get(peer.data.routerId);
+    switch (request.method) {
+        ...
+        case 'createWebRtcTransport':
+            const {
+                forceTcp,
+                producing,
+                consuming,
+                sctpCapabilities
+            } = request.data;
+
+            const webRtcTransportOptions =
+            {
+                ...config.mediasoup.webRtcTransportOptions,
+                enableSctp     : Boolean(sctpCapabilities),
+                numSctpStreams : (sctpCapabilities || {}).numStreams,
+                appData        : { producing, consuming }
+            };
+
+            if (forceTcp)
+            {
+                webRtcTransportOptions.enableUdp = false;
+                webRtcTransportOptions.enableTcp = true;
+            }
+
+            const transport = await router.createWebRtcTransport(
+                webRtcTransportOptions);
+
+            peer.data.transports.set(transport.id, transport);
+
+            ...
+            // Setup transport event handlers...
+            ...
+
+            accept(
+                {
+                    id             : transport.id,
+                    iceParameters  : transport.iceParameters,
+                    iceCandidates  : transport.iceCandidates,
+                    dtlsParameters : transport.dtlsParameters,
+                    sctpParameters : transport.sctpParameters
+                });
+
+            ...
+            break;
+    }
+}`}
+                    </SyntaxHighlighter>
+                    <p><span className="font-semibold">Translation:</span> The client sends a <code>"createWebRtcTransport"</code> signaling request via Protoo for its Send Transport and Receive Tranport separately upon first joining the Dialog Room.</p>
+                    <p>When the Dialog server receives such a signaling request, it must create a server-side Transport given certain parameters from the client and from Dialog's configuration. Gathering and setting those parameters is a majority of the code above.</p>
+                    <p>Once the new Transport is created, it is associated with the Protoo Peer who sent the request to create a new Transport.</p>
+                    <p>Finally, data about the Transport is sent back to the client that requested the new Transport. That data includes the Transport's:</p>
+                    <ul className='list-disc ml-4'>
+                        <li><span className='font-semibold'>ID:</span> A string used to uniquely identify the Transport.</li>
+                        <li><span className='font-semibold'>ICE Parameters:</span> Information used to authenticate with the specified ICE server.</li>
+                        <li><span className='font-semibold'>ICE Candidates:</span></li>
+                        <li><span className='font-semibold'>DTLS Parameters:</span></li>
+                        <li><span className='font-semibold'>SCTP Parameters:</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const Transport = ({ darkThemeEnabled }) => {
+    return (
+        <div className='w-full'>
+            <h4 id="mediasoup-transport"><a href="#mediasoup-transport" className='hover:underline font-semibold text-xl'>Mediasoup <code>Transport</code></a></h4>
+            <div className='!mt-0'>
+                <a className='underline text-xs' target="_blank" href='https://mediasoup.org/documentation/v3/mediasoup-client/api/#Transport'><code>(mediasoup client docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a> <a className='underline text-xs' target="_blank" href='https://mediasoup.org/documentation/v3/mediasoup/api/#Transport'><code>(mediasoup server docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a>
+            </div>
+            <div className='!mt-2 flex w-full'>
+                <div className='bg-blue-200 dark:bg-blue-900 shrink-0 w-[2px] rounded-md' />
+                <div className='space-y-4 !mt-0 w-full pl-2'>
+                    <MediasoupSFUTransport darkThemeEnabled={darkThemeEnabled} />
                 </div>
             </div>
         </div>
@@ -350,6 +497,7 @@ export const MediasoupSFU = ({ }) => {
             <div className='!mt-4 space-y-6 w-full max-w-4xl'>
                 <Producer darkThemeEnabled={darkThemeEnabled} />
                 <Consumer darkThemeEnabled={darkThemeEnabled} />
+                <Transport darkThemeEnabled={darkThemeEnabled} />
                 <div>
                     <h4 id="mediasoup-under-construction" className='text-lg font-semibold'>Mediasoup - &lt;Other Thing&gt; 👷</h4>
                     <Divider />

@@ -9,6 +9,7 @@ export const LibraryOverview = ({ }) => {
             <h3 className='text-sm !mt-0'>Protoo and Mediasoup</h3>
             <Divider className='!mt-1' />
             <p>While it is possible for developers to write code using <a className='underline' target="_blank" href='https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API'>the bare WebRTC protocols and APIs<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>, it is often useful to simplify app development by using well-tested software libraries that abstract away some of those core concepts.</p>
+            <p>The Dialog SFU and the WebRTC parts of the Hubs client make significant use of two software libraries: Protoo and Mediasoup. Let's explore what those libraries do, why they're important, and how they're used.</p>
             <p>Dialog, the Hubs SFU, uses:</p>
             <ul className='list-disc ml-5 !mt-1 space-y-1'>
                 <li><p><a className='underline font-semibold' target="_blank" href='https://protoo.versatica.com/#protoo-server'>protoo-server<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> - "a minimalist and extensible Node.js <i>signaling framework</i> for multi-party Real-Time Communication applications"</p></li>

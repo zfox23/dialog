@@ -103,7 +103,7 @@ const AboutPage = ({ }) => {
                     </div>
                 </div>
 
-                <div className='!mt-4 w-full flex justify-center py-4 bg-slate-200/60 dark:bg-neutral-700 border-y-2 border-slate-300/40 dark:border-neutral-600'>
+                <div className='!mt-4 p-2 w-full flex justify-center py-4 bg-slate-200/60 dark:bg-neutral-700 border-y-2 border-slate-300/40 dark:border-neutral-600'>
                     <div className='w-full max-w-4xl'>
                         <h2 id="navigation" className='text-3xl font-semibold hover:underline'><a href="#navigation">Navigation</a></h2>
                         <Divider className='!mt-1' />
