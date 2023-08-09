@@ -104,12 +104,71 @@ const SFU = ({ }) => {
     )
 }
 
-const STUNTURNICE = ({ }) => {
+const ICESTUNTURN = ({ }) => {
     return (
-        <div className='space-y-4'>
-            <h3 id="STUN-TURN-and-ICE" className='font-semibold text-2xl'><a href="#STUN-TURN-and-ICE" className='hover:underline'>STUN, TURN, and ICE</a></h3>
-            <Divider className='!mt-1' />
-            <p>Oh goodness how do I explain STUN TURN and ICE here?</p>
+        <div className='space-y-8'>
+            <div className='space-y-4'>
+                <h3 id="ICE-STUN-and-TURN" className='font-semibold text-2xl'><a href="#ICE-STUN-and-TURN" className='hover:underline'>ICE, STUN, and TURN</a></h3>
+                <Divider className='!mt-1' />
+                <p>For any two WebRTC endpoints to be able to communicate with each other, they must understand each other's network conditions and agree on a method of communication. ("WebRTC endpoints" may be two peers in a peer-to-peer network, or one peer and one SFU.)</p>
+                <p>The process by which two WebRTC endpoints discover each others' network conditions and select a method of communication is called <span className='font-semibold'>Interactive Connectivity Establishment, or ICE</span>.</p>
+                <p>There are several networking-related challenges we need to overcome during the ICE process. These challenges are important to understand, since they directly impact the way we implement WebRTC within client and server applications.</p>
+            </div>
+
+            <div className='space-y-4'>
+                <h4 id="networking-irl"><a href="#networking-irl" className='hover:underline text-xl'>Networking in Real-Life Conditions - The Challenges</a></h4>
+                <Divider className='!mt-1' />
+                <p>As you read this, your device is probably connected to the Internet via a router. When your device made a request for this website's HTML, JavaScript, and CSS, your router kept track of which device made that request. Then, it knew to return the result of your request to <i>your device</i>, rather than another device on your network.</p>
+                <p>As the request information packets passed through your networking equipment, your ISP's networking equipment, and this website host's networking equipment, the source and destination IP addresses and ports of the packets were changed until they arrived successfully at the website host's IP address. Then, packets returning from the website host were translated back to the original IP addresses and ports.</p>
+                <p>This process refers to <span className="font-semibold">Network Address Translation, or NAT</span>. The act of changing the information packets' source and destination IP addresses and ports is called <span className='font-semibold'>creating a NAT mapping</span>.</p>
+                <p>In most cases, two given WebRTC endpoints will exist on two physically disparate networks, separated by such a router and/or firewall. In those cases, NAT must occur for those endpoints to send and receive media packets.</p>
+
+                <div className='p-4 rounded-md bg-green-50 dark:bg-green-800/20 relative'>
+                    <div className='p-1 overflow-clip w-10 absolute top-0 left-0 bottom-0 flex items-center justify-center z-0 rounded-l-md'>
+                        <AcademicCapIcon className='text-green-300 dark:text-green-600/40 opacity-50 mt-0.5 -ml-6' />
+                    </div>
+                    <div className='z-10 relative'>
+                        <p>A Dialog SFU associated with a given Hub is accessible directly via a domain name and port combination, so the only network address translation that must occur in the Hubs case exists on the connecting client's side.</p>
+                    </div>
+                </div>
+
+                <p>Despite a successful NAT process, there are other potential issues which may prevent two WebRTC endpoints from successfully connecting. For example, your firewall's configuration may contain specific rules which disallow traffic of a certain kind to pass, and those rules may apply to WebRTC media traffic. In other cases, a network configuration may heuristically view WebRTC traffic as suspicious and block it.</p>
+
+                <p>It can be frustrating to determine exactly which aspect of a network prevents successful WebRTC packet transmission. The issue could be hardware-related, software-related, or even a disconnected network cable. It's important for WebRTC application developers to gracefully handle as many known connection failure cases as they can, and develop meticulous logging practices for catching unhandled error cases.</p>
+            </div>
+
+            <div className='space-y-4'>
+                <h4 id="stun"><a href="#stun" className='hover:underline text-xl'>STUN (Session Traversal Utilities for NAT)</a></h4>
+                <Divider className='!mt-1' />
+                <p>When trying to establish two-way WebRTC media communication between two endpoints, each endpoint needs to tell the other "here is the IP address and port you might be able to use to send me WebRTC data."</p>
+                <p><span className='font-semibold'>STUN is a protocol which allows a WebRTC endpoint to determine the public IP address and port allocated to it after Network Address Translation has occurred.</span> This IP address and port may then be reused for WebRTC purposes - although it may be the case that this information is unusable <a href="#turn" className='underline'>(more on that when discussing TURN)</a>.</p>
+                <p>There are several dozen publicly-available STUN servers which provide this service. <a className='underline' target="_blank" href='https://raw.githubusercontent.com/pradt2/always-online-stun/master/valid_hosts.txt'>Here's a list of public STUN servers maintained by "pradt2" on GitHub.<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a></p>
+
+                <div className='p-4 rounded-md bg-green-50 dark:bg-green-800/20 relative'>
+                    <div className='p-1 overflow-clip w-10 absolute top-0 left-0 bottom-0 flex items-center justify-center z-0 rounded-l-md'>
+                        <AcademicCapIcon className='text-green-300 dark:text-green-600/40 opacity-50 mt-0.5 -ml-6' />
+                    </div>
+                    <div className='z-10 relative'>
+                        <p>The Hubs client uses Google's public STUN servers, primarily <code>stun:stun1.l.google.com:19302</code>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className='space-y-4'>
+                <h4 id="turn"><a href="#turn" className='hover:underline text-xl'>TURN (Traversal Using Relays around NAT)</a></h4>
+                <Divider className='!mt-1' />
+                <p>In some cases, even when two WebRTC endpoints know the public IP address and port established for direct WebRTC communication, direct communication is impossible. This may occur due to strict firewall rules or <a href="#nat-compatibility" className='underline'>incompatible NAT types</a>.</p>
+
+                <div id="nat-compatibility" className='p-4 rounded-md bg-green-50 dark:bg-green-800/20 relative'>
+                    <div className='p-1 overflow-clip w-10 absolute top-0 left-0 bottom-0 flex items-center justify-center z-0 rounded-l-md'>
+                        <AcademicCapIcon className='text-green-300 dark:text-green-600/40 opacity-50 mt-0.5 -ml-6' />
+                    </div>
+                    <div className='z-10 relative'>
+                        <p>Nintendo has <a className='underline' target="_blank" href='https://en-americas-support.nintendo.com/app/answers/detail/a_id/12472/~/compatibility-between-nat-types'>published a great document<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> which describes, in simplified terms, NAT type compatibilities.</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     )
 }
@@ -128,7 +187,7 @@ export const CommunicationDataFlow = ({ }) => {
 
             <SFU />
 
-            <STUNTURNICE />
+            <ICESTUNTURN />
         </div>
     )
 }
