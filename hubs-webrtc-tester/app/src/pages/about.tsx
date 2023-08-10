@@ -18,6 +18,7 @@ import { Conclusion } from '../components/about/Conclusion';
 import { ChevronLeftIcon } from '@heroicons/react/20/solid';
 import { Link } from 'gatsby';
 import { linearScale } from '../shared/lib/utilities';
+import { CodeSampleLibrary } from '../components/about/CodeSampleLibrary';
 
 const TableOfContents = ({ className }: { className?: string }) => {
     const headings = useHeadings();
@@ -127,6 +128,8 @@ const AboutPage = ({ }) => {
                     <DialogConnectionProcessOverview />
 
                     <FrequentlyAskedQuestions darkThemeEnabled={darkThemeEnabled} />
+
+                    <CodeSampleLibrary darkThemeEnabled={darkThemeEnabled} />
 
                     <Conclusion />
                 </div>
