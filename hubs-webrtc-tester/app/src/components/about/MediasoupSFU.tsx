@@ -462,25 +462,20 @@ const Transport = ({ darkThemeEnabled }) => {
     )
 }
 
-export const MediasoupSFU = ({ }) => {
-    const [darkThemeEnabled, setDarkThemeEnabled] = useState(isDarkThemeEnabled());
-
-    useEventListenerWindow("darkThemeChanged", (evt) => {
-        setDarkThemeEnabled(evt.detail);
-    });
-
+export const MediasoupSFU = ({ darkThemeEnabled }) => {
     return (
         <div className='!mt-8 space-y-4 flex flex-col items-center w-full'>
-            <div className='w-full max-w-4xl'>
-                <h3 id="mediasoup-glossary" className='font-semibold text-2xl w-full'><a className="hover:underline" href="#mediasoup-glossary">Mediasoup SFU - Glossary and Usage</a></h3>
-                <Divider className='!mt-1' />
+            <div className='!mt-0 w-full flex justify-center p-4 animate-gradient items-center flex-col' style={{ "background": "linear-gradient(331deg, rgba(6,10,42,1) 0%, rgba(47,56,126,1) 48%, rgba(35,41,85,1) 100%)", "backgroundSize": "400% 400%" }} >
+                <div className='w-full max-w-4xl'>
+                    <div className='w-full'>
+                        <h3 id="mediasoup-glossary" className='font-semibold text-2xl w-full text-slate-50'><a className="hover:underline" href="#mediasoup-glossary">Mediasoup SFU - Glossary and Usage</a></h3>
+                        <Divider className='!mt-1 border-white/75' />
+                    </div>
+                    <StaticImage objectFit='contain' height={72} src='../../images/mediasoup.png' quality={100} alt="The Mediasoup logo" />
+                </div>
             </div>
 
-            <div className='!mt-0 rounded-md w-full flex justify-center p-4 animate-gradient' style={{ "background": "linear-gradient(331deg, rgba(6,10,42,1) 0%, rgba(47,56,126,1) 48%, rgba(35,41,85,1) 100%)", "backgroundSize": "400% 400%" }} >
-                <StaticImage objectFit='contain' height={72} src='../../images/mediasoup.png' quality={100} alt="The Mediasoup logo" />
-            </div>
-
-            <div className='space-y-4 max-w-4xl'>
+            <div className='space-y-4 max-w-4xl p-2 md:p-4'>
                 <p>The authors of the Mediasoup library - who are the same as the authors of the Protoo library - have chosen specific names to refer to SFU-related concepts. In this section, we'll define some of Mediasoup's relevant concepts and verbosely explore how they're used in Hubs code.</p>
                 <p>Directly below each term's heading, you'll find links to Mediasoup's official documentation relevant to that term.</p>
 
@@ -494,7 +489,7 @@ export const MediasoupSFU = ({ }) => {
                 </div>
             </div>
 
-            <div className='!mt-4 space-y-6 w-full max-w-4xl'>
+            <div className='!mt-4 space-y-6 w-full max-w-4xl p-2 md:p-4'>
                 <Producer darkThemeEnabled={darkThemeEnabled} />
                 <Consumer darkThemeEnabled={darkThemeEnabled} />
                 <Transport darkThemeEnabled={darkThemeEnabled} />

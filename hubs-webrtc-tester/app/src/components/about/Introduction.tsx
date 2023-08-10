@@ -4,7 +4,7 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid';
 
 export const Introduction = ({ }) => {
     return (
-        <div className='pt-4 w-full max-w-4xl space-y-4'>
+        <div className='pt-4 w-full max-w-4xl space-y-4 p-2 md:p-4'>
             <h2 id="introduction" className='text-3xl font-semibold'><a href="#introduction" className='hover:underline'>Introduction</a></h2>
             <Divider className='!mt-1' />
             <p>This page exists to demystify WebRTC and the way Hubs uses WebRTC technologies so that more people can understand and make better use of Hubs' communication capabilites. Additionally, with a deeper understanding of the Hubs technology stack, more community members will be able to suggest improvements to and fix bugs regarding the WebRTC components of Hubs.</p>

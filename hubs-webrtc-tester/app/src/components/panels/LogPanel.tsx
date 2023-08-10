@@ -13,7 +13,7 @@ const DEFAULT_DISPLAY_LOGS = true;
 const DEFAULT_DISPLAY_WARNINGS = true;
 const DEFAULT_DISPLAY_ERRORS = true;
 
-export const LogPanel = ({ }) => {
+export const LogPanel = ({ darkThemeEnabled }) => {
     const [logsExpanded, setLogsExpanded] = useState<boolean>(isBrowser ? (localStorage.getItem('logsExpanded') ? localStorage.getItem('logsExpanded') === "true" : DEFAULT_LOGS_EXPANDED) : DEFAULT_LOGS_EXPANDED);
     const [displayLogs, setDisplayLogs] = useState<boolean>(isBrowser ? (localStorage.getItem('displayLogs') ? localStorage.getItem('displayLogs') === "true" : DEFAULT_DISPLAY_LOGS) : DEFAULT_DISPLAY_LOGS);
     const [displayWarnings, setDisplayWarnings] = useState<boolean>(isBrowser ? (localStorage.getItem('displayWarnings') ? localStorage.getItem('displayWarnings') === "true" : DEFAULT_DISPLAY_WARNINGS) : DEFAULT_DISPLAY_WARNINGS);
@@ -21,11 +21,6 @@ export const LogPanel = ({ }) => {
     const [logFilter, setLogFilter] = useState<string[]>([]);
 
     const [logs, setLogs] = useState<MessageType[]>([]);
-    const [darkThemeEnabled, setDarkThemeEnabled] = useState(isDarkThemeEnabled());
-
-    useEventListenerWindow("darkThemeChanged", (evt) => {
-        setDarkThemeEnabled(evt.detail);
-    });
 
     useEffect(() => {
         let newLogFilter: string[] = [];

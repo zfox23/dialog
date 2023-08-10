@@ -76,17 +76,21 @@ const PageNavigationMenu = () => {
 }
 
 const AboutPage = ({ }) => {
+    const [darkThemeEnabled, setDarkThemeEnabled] = useState(isDarkThemeEnabled());
+
+    useEventListenerWindow("darkThemeChanged", (evt) => {
+        setDarkThemeEnabled(evt.detail);
+    });
+
     return (
         <Layout>
-            <div className='md:mb-8 w-full flex flex-col items-center'>
-                <header className='md:pt-8 pt-16 w-full animate-gradient flex flex-col items-center relative' style={{ "background": "linear-gradient(107.97deg,#489cbe 6.73%,#5427c9 39.4%,#a8527c 77.18%,#a67878 104.75%)", "backgroundSize": "250% 250%" }}>
+            <div className='mb-4 md:mb-8 w-full flex flex-col items-center'>
+                <header className='pt-16 pb-8 md:py-8 w-full animate-gradient flex flex-col items-center relative' style={{ "background": "linear-gradient(107.97deg,#489cbe 6.73%,#5427c9 39.4%,#a8527c 77.18%,#a67878 104.75%)", "backgroundSize": "250% 250%" }}>
                     <Link className='absolute top-3 left-0 bg-slate-200/95 dark:bg-neutral-700/95 text-neutral-600 dark:text-slate-50 p-1 rounded-r-md hover:underline opacity-60 hover:opacity-100 text-sm transition-all' to="../"><ChevronLeftIcon className='h-5 w-4 inline-block' />Return to <code>hubs-webrtc-tester</code></Link>
                     <h1 className='text-4xl font-semibold underline text-center text-white'>How Mozilla Hubs Uses WebRTC</h1>
                     <StaticImage placeholder='none' objectFit='contain' className="rounded-md max-w-md" src="../images/header-transparent.png" alt="Hubs 💖 WebRTC" quality={100} />
+                    <ThemeToggleSwitch className='text-slate-50' isLarge={true} />
                 </header>
-                <div className='bg-slate-200 border-solid border-2 border-t-0 border-slate-300 dark:bg-slate-500/20 dark:border-slate-400/20 p-2 rounded-b-md transition-colors'>
-                    <ThemeToggleSwitch isLarge={true} />
-                </div>
             </div>
 
             <PageNavigationMenu />
@@ -111,18 +115,18 @@ const AboutPage = ({ }) => {
                     </div>
                 </div>
 
-                <div className='space-y-16 md:space-y-24 w-full flex flex-col items-center p-2 md:p-4'>
+                <div className='space-y-16 md:space-y-24 w-full flex flex-col items-center'>
                     <Introduction />
 
                     <WhatIsWebRTC />
 
                     <CommunicationDataFlow />
 
-                    <HubsWebRTCLibraries />
+                    <HubsWebRTCLibraries darkThemeEnabled={darkThemeEnabled} />
 
                     <DialogConnectionProcessOverview />
 
-                    <FrequentlyAskedQuestions />
+                    <FrequentlyAskedQuestions darkThemeEnabled={darkThemeEnabled} />
 
                     <Conclusion />
                 </div>

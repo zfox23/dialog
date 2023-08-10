@@ -177,30 +177,26 @@ const ProtooPeer = ({ darkThemeEnabled }) => {
     )
 }
 
-export const ProtooSignaling = ({ }) => {
-    const [darkThemeEnabled, setDarkThemeEnabled] = useState(isDarkThemeEnabled());
-
-    useEventListenerWindow("darkThemeChanged", (evt) => {
-        setDarkThemeEnabled(evt.detail);
-    });
+export const ProtooSignaling = ({ darkThemeEnabled }) => {
 
     return (
         <div className='!mt-8 space-y-4 flex flex-col items-center w-full'>
-            <div className='w-full max-w-4xl'>
-                <h3 id="protoo-glossary" className='font-semibold text-2xl w-full'><a className="hover:underline" href="#protoo-glossary">Protoo Signaling - Glossary and Usage</a></h3>
-                <Divider className='!mt-1' />
+            <div className='!mt-0 w-full flex justify-center p-4 animate-gradient items-center flex-col' style={{ "background": "linear-gradient(331deg, rgba(91,49,48,1) 0%, rgba(177,53,39,1) 45%, rgba(157,65,52,1) 100%)", "backgroundSize": "400% 400%" }} >
+                <div className='w-full max-w-4xl'>
+                    <div className='w-full'>
+                        <h3 id="protoo-glossary" className='font-semibold text-2xl w-full text-white'><a className="hover:underline" href="#protoo-glossary">Protoo Signaling - Glossary and Usage</a></h3>
+                        <Divider className='!mt-1 border-white/75' />
+                    </div>
+                    <StaticImage objectFit='contain' height={72} src='../../images/protoo.png' quality={100} alt="The Protoo logo" />
+                </div>
             </div>
 
-            <div className='!mt-0 rounded-md w-full flex justify-center p-4 animate-gradient' style={{ "background": "linear-gradient(331deg, rgba(91,49,48,1) 0%, rgba(177,53,39,1) 45%, rgba(157,65,52,1) 100%)", "backgroundSize": "400% 400%" }} >
-                <StaticImage objectFit='contain' height={72} src='../../images/protoo.png' quality={100} alt="The Protoo logo" />
-            </div>
-
-            <div className='space-y-4 max-w-4xl'>
+            <div className='space-y-4 max-w-4xl p-2 md:p-4'>
                 <p>The authors of the Protoo library have chosen specific names to refer to signaling-related concepts. In this section, we'll define some of Protoo's relevant concepts and verbosely explore how they're used in Hubs code.</p>
                 <p>Directly below each term's heading, you'll find links to Protoo's official documentation relevant to that term.</p>
             </div>
 
-            <div className='!mt-4 space-y-6 w-full max-w-4xl'>
+            <div className='!mt-4 space-y-6 w-full max-w-4xl p-2 md:p-4'>
                 <ProtooWebSocketTransport darkThemeEnabled={darkThemeEnabled} />
                 <ProtooRoom darkThemeEnabled={darkThemeEnabled} />
                 <ProtooPeer darkThemeEnabled={darkThemeEnabled} />
