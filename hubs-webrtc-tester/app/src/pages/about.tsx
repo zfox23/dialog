@@ -19,6 +19,7 @@ import { ChevronLeftIcon } from '@heroicons/react/20/solid';
 import { Link } from 'gatsby';
 import { linearScale } from '../shared/lib/utilities';
 import { CodeSampleLibrary } from '../components/about/CodeSampleLibrary';
+import { SEO } from '../components/SEO';
 
 const TableOfContents = ({ className }: { className?: string }) => {
     const headings = useHeadings();
@@ -85,10 +86,12 @@ const AboutPage = ({ }) => {
 
     return (
         <Layout>
+            <SEO title='How Mozilla Hubs Uses WebRTC < Hubs WebRTC Tester' />
             <div className='mb-4 md:mb-8 w-full flex flex-col items-center'>
-                <header className='pt-16 pb-8 md:py-8 w-full animate-gradient flex flex-col items-center relative' style={{ "background": "linear-gradient(107.97deg,#489cbe 6.73%,#5427c9 39.4%,#a8527c 77.18%,#a67878 104.75%)", "backgroundSize": "250% 250%" }}>
+                <header className='text-white pt-16 pb-8 md:py-8 w-full animate-gradient flex flex-col items-center relative' style={{ "background": "linear-gradient(107.97deg,#489cbe 6.73%,#5427c9 39.4%,#a8527c 77.18%,#a67878 104.75%)", "backgroundSize": "250% 250%" }}>
                     <Link className='absolute top-3 left-0 bg-slate-200/95 dark:bg-neutral-700/95 text-neutral-600 dark:text-slate-50 p-1 rounded-r-md hover:underline opacity-60 hover:opacity-100 text-sm transition-all' to="../"><ChevronLeftIcon className='h-5 w-4 inline-block' />Return to <code>hubs-webrtc-tester</code></Link>
-                    <h1 className='text-4xl font-semibold underline text-center text-white'>How Mozilla Hubs Uses WebRTC</h1>
+                    <h1 className='text-4xl font-semibold underline text-center'><a href="#">How Mozilla Hubs Uses WebRTC</a></h1>
+                    <h2 className='text-sm mt-1 opacity-75 hover:opacity-100 transition-opacity'>a web resource by <a className='underline' target="_blank" href='https://zachfox.io'>zach fox<ArrowTopRightOnSquareIcon className='h-3 w-3 ml-1 -top-0.5 relative inline-block' /></a></h2>
                     <StaticImage placeholder='none' objectFit='contain' className="rounded-md max-w-md" src="../images/header-transparent.png" alt="Hubs 💖 WebRTC" quality={100} />
                     <ThemeToggleSwitch className='text-slate-50' isLarge={true} />
                 </header>

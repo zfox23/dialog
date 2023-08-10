@@ -8,6 +8,9 @@ import { RemoteAudioStreamsPanel } from '../components/panels/RemoteAudioStreams
 import { HeaderPanel } from '../components/panels/HeaderPanel';
 import { LogPanel } from '../components/panels/LogPanel';
 import { AudioInputOutputPanel } from '../components/panels/AudioInputOutputPanel';
+import { SEO } from '../components/SEO';
+import { useEventListenerWindow } from '../hooks/useEventListener';
+import { isDarkThemeEnabled } from '../components/ToggleThemeSwitch';
 
 const DEFAULT_DIALOG_HOST = "hubs.local";
 const DEFAULT_DIALOG_PORT = "4443";
@@ -15,6 +18,12 @@ const DEFAULT_HUB_ID = '6Ek8qkK';
 const DEFAULT_SESSION_ID = 'anonymous';
 
 const IndexPage = ({ }) => {
+    const [darkThemeEnabled, setDarkThemeEnabled] = useState(isDarkThemeEnabled());
+
+    useEventListenerWindow("darkThemeChanged", (evt) => {
+        setDarkThemeEnabled(evt.detail);
+    });
+
     const dialogAdapter = new DialogAdapter();
 
     const [dialogHost, setDialogHost] = useState(isBrowser ? (localStorage.getItem('dialogHost') || DEFAULT_DIALOG_HOST) : DEFAULT_DIALOG_HOST);
@@ -61,6 +70,7 @@ const IndexPage = ({ }) => {
 
     return (
         <Layout>
+            <SEO />
             <div className='flex flex-col w-full items-center'>
                 <HeaderPanel />
 
@@ -69,7 +79,7 @@ const IndexPage = ({ }) => {
 
                     <AudioInputOutputPanel dialogAdapter={dialogAdapter} />
 
-                    <LogPanel />
+                    <LogPanel darkThemeEnabled={darkThemeEnabled} />
 
                     <RemoteAudioStreamsPanel dialogAdapter={dialogAdapter} />
                 </div>
