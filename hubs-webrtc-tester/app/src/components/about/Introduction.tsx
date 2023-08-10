@@ -15,6 +15,7 @@ export const Introduction = ({ }) => {
                 <li>Learn which software libraries are used to power Hubs' WebRTC stack</li>
                 <li>Learn how those software libraries are used in Hubs <i>(including code snippets and explanations)</i></li>
                 <li>Learn the answers to <a className="underline" href="#faq">frequently asked questions</a></li>
+                <li>Be exposed to snippets of Hubs code that perform specific complex functions</li>
             </ul>
 
             <p>If you have additional questions about Hubs or Hubs' use of WebRTC, Mozilla developers are available to answer your questions on <a className='underline' target="_blank" href='https://discord.com/invite/sBMqSjCndj'>the Hubs Discord server<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>.</p>

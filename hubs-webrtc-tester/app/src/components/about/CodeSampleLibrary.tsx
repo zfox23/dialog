@@ -10,7 +10,7 @@ const CodeSampleLibraryCoturn = ({ darkThemeEnabled }) => {
 
     return (
         <div className='space-y-4'>
-            <h4 id="faq-coturn" className='text-xl font-semibold'><a className="hover:underline" href="#faq-coturn">Sending TURN Information to the Hubs Client</a></h4>
+            <h4 id="code-sample-coturn" className='text-xl font-semibold'><a className="hover:underline" href="#code-sample-coturn">Sending TURN Information to the Hubs Client</a></h4>
             <p>By following the relatively complex code path below - which is written in chronological order - you will learn:</p>
             <ol className='list-disc ml-4'>
                 <li>How the Reticulum server code determines what TURN information to send to the client</li>
@@ -193,7 +193,7 @@ export const CodeSampleLibrary = ({ darkThemeEnabled }) => {
     return (
         <div className='mt-4 p-2 md:p-4 pt-4 w-full max-w-4xl space-y-8'>
             <div className='space-y-4'>
-                <h2 id="faq" className='text-3xl font-semibold'><a href="#faq" className='hover:underline'>Code Sample Library (Advanced)</a></h2>
+                <h2 id="code-samples" className='text-3xl font-semibold'><a href="#code-samples" className='hover:underline'>Code Sample Library (Advanced)</a></h2>
                 <Divider className='!mt-1' />
                 <p>Here you'll find contextualized examples of code found throughout the Hubs/Dialog codebases. It can be challenging to find the exact code that answers a specific question about program flow. You may find your answer in this section.</p>
             </div>
@@ -201,7 +201,7 @@ export const CodeSampleLibrary = ({ darkThemeEnabled }) => {
             <div className='space-y-8 md:space-y-16'>
                 <div>
                     <div>
-                        <h3 id="faq-turn" className='text-2xl font-semibold'><a href="#faq-turn" className='hover:underline'>TURN</a></h3>
+                        <h3 id="code-samples-turn" className='text-2xl font-semibold'><a href="#code-samples-turn" className='hover:underline'>TURN</a></h3>
                         <Divider className='!mt-1' />
                     </div>
                     <div className='space-y-8 md:space-y-16'>
