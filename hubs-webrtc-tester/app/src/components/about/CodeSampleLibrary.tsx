@@ -142,8 +142,8 @@ async connect({ serverUrl, roomId, serverParams, scene, clientId, forceTcp, forc
 //hubs/src/naf-dialog-adapter.js > DialogAdapter > _joinRoom()
 async _joinRoom() {
     ...
-    const { host, port, turn } = this._serverParams;
-    const iceServers = this.getIceServers(host, port, turn);
+    const { host, turn } = this._serverParams;
+    const iceServers = this.getIceServers(host, turn);
 
     await this.createSendTransport(iceServers);
     await this.createRecvTransport(iceServers);
@@ -152,7 +152,7 @@ async _joinRoom() {
 
 
 //hubs/src/naf-dialog-adapter.js > DialogAdapter > getIceServers()
-getIceServers(host, port, turn) {
+getIceServers(host, turn) {
     const iceServers = [];
 
     this._serverUrl = \`wss://\${host}:\${port}\`;
@@ -174,10 +174,8 @@ getIceServers(host, port, turn) {
                 credential: turn.credential
             });
         });
-        iceServers.push({ urls: "stun:stun1.l.google.com:19302" });
-    } else {
-        iceServers.push({ urls: "stun:stun1.l.google.com:19302" }, { urls: "stun:stun2.l.google.com:19302" });
     }
+    iceServers.push({ urls: "stun:stun1.l.google.com:19302" }, { urls: "stun:stun2.l.google.com:19302" });
     return iceServers;
 }`}
                             </SyntaxHighlighter>

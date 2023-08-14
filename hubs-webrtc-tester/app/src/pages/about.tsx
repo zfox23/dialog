@@ -124,7 +124,7 @@ const AboutPage = ({ }) => {
 
                     <WhatIsWebRTC />
 
-                    <CommunicationDataFlow />
+                    <CommunicationDataFlow darkThemeEnabled={darkThemeEnabled} />
 
                     <HubsWebRTCLibraries darkThemeEnabled={darkThemeEnabled} />
 

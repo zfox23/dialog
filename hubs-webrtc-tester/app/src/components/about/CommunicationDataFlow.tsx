@@ -1,7 +1,9 @@
 import React from 'react';
 import Divider from '../Divider';
-import { AcademicCapIcon, ArrowTopRightOnSquareIcon, ExclamationCircleIcon, HandThumbDownIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
+import { AcademicCapIcon, ArrowTopRightOnSquareIcon, CodeBracketIcon, ExclamationCircleIcon, HandThumbDownIcon, HandThumbUpIcon } from '@heroicons/react/24/solid';
 import { StaticImage } from 'gatsby-plugin-image';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const PeerToPeer = ({ }) => {
     return (
@@ -58,11 +60,12 @@ const SFU = ({ }) => {
             <p>The most common WebRTC communication architecture involves the use of a <span className='font-semibold'>Selective Forwarding Unit</span>, or SFU. A Selective Forwarding Unit is a piece of software that runs on a server. The SFU receives multiple audio/video data streams from its peers. Then, the SFU's logic determines how to <i>forward</i> those data streams to all of the peers connected to it.</p>
 
             <div className='p-4 rounded-md bg-green-50 dark:bg-green-800/20 relative'>
-                <div className='p-1 overflow-clip w-10 absolute top-0 left-0 bottom-0 flex items-center justify-center z-0 rounded-l-md'>
-                    <AcademicCapIcon className='text-green-300 dark:text-green-600/40 opacity-50 mt-0.5 -ml-6' />
+                <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
+                    <AcademicCapIcon className='text-green-300 dark:text-green-600/40 opacity-50' />
                 </div>
-                <div className='z-10 relative'>
+                <div className='z-10 relative space-y-2'>
                     <p><span className='font-semibold'>The Mozilla Hubs SFU is named Dialog.</span> Dialog is written in NodeJS. You can take a look at Dialog's source code <a className='underline' target="_blank" href='https://github.com/mozilla/dialog'>here on GitHub<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>.</p>
+                    <p>Dialog is one of a few named server components that power Hubs. <span className='font-semibold'>Reticulum</span> is the name of the central server which orchestrates networking between clients and gives information to each client about the Dialog instance associated with a Hub.</p>
                 </div>
             </div>
 
@@ -104,7 +107,7 @@ const SFU = ({ }) => {
     )
 }
 
-const ICESTUNTURN = ({ }) => {
+const ICESTUNTURN = ({ darkThemeEnabled }) => {
     return (
         <div className='space-y-8'>
             <div className='space-y-4'>
@@ -186,13 +189,66 @@ const ICESTUNTURN = ({ }) => {
             <div className='space-y-4'>
                 <h4 id="ice"><a href="#ice" className='hover:underline text-xl'>ICE - Interactive Connectivity Establishment</a></h4>
                 <Divider className='!mt-1' />
-                <p>During the ICE process, a WebRTC endpoint will perform <i>candidate gathering</i> to discover all of the potential ways it can connect to another WebRTC endpoint. Then, those two endpoints will perform <i>candidate nomination</i> and then <i>candidate selection</i>, determining together which of those routes is most optimal.</p>
+                <p>During the ICE process, a WebRTC endpoint will perform <i>candidate gathering</i> to discover all of the potential ways it can connect to another WebRTC endpoint. Candidate gathering is programmed into the endpoint's application code. Here's what that code looks like for the Hubs client:</p>
+
+                <div className='!mt-2 p-4 rounded-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
+                    <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
+                        <CodeBracketIcon className='text-slate-300 dark:text-slate-200/40 opacity-50' />
+                    </div>
+                    <div className='z-10 relative space-y-2 w-full'>
+                        <p>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/hubs/blob/master/src/naf-dialog-adapter.js'>hubs/naf-dialog-adapter.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; DialogAdapter &gt; getIceServers()</code>:</p>
+                        <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
+                            {`getIceServers(host, turn) {
+    const iceServers = [];
+
+    if (turn && turn.enabled) {
+        turn.transports.forEach(ts => {
+            // Try both TURN DTLS and TCP/TLS
+            if (!this._forceTcp) {
+                iceServers.push({
+                    urls: \`turns:\${host}:\${ts.port}\`,
+                    username: turn.username,
+                    credential: turn.credential
+                });
+            }
+
+            iceServers.push({
+                urls: \`turns:\${host}:\${ts.port}?transport=tcp\`,
+                username: turn.username,
+                credential: turn.credential
+            });
+        });
+    }
+    iceServers.push({ urls: "stun:stun1.l.google.com:19302" }, { urls: "stun:stun2.l.google.com:19302" });
+    return iceServers;
+}`
+                            }
+                        </SyntaxHighlighter>
+                        <p><span className="font-semibold">Translation:</span> This is the function on the Hubs client that performs ICE candidate gathering. The STUN/TURN information returned by this function will be passed to the candidate nomination and selection process.</p>
+                        <p>Whether TURN is enabled is determined by Reticulum, which is the server that orchestrates general networking between clients. If Reticulum determines that TURN is enabled, it passes the TURN server information to the client upon initial connection.</p>
+                        <p>Note that the Hubs client always uses TURN over TLS, which is shortened to <code>turns</code> when specified in an ICE candidate.</p>
+                        <p>If Reticulum's TURN information is passed to <code>getIceServers()</code>, the client will add the following two sets of TURN servers to its list of ICE candidates <i>per set of TURN servers specified by Reticulum</i>:</p>
+                        <ol className='ml-4 list-decimal'>
+                            <li>
+                                <p>The secure TURN server running on the same host as Reticulum at the TURN port specified by Reticulum (as long as <code>force_tcp</code> is <i>not</i> present in Hubs' URL query parameters). The protocol used here will be UDP.</p>
+                                <ul className='list-disc ml-4'>
+                                    <li><span className='font-semibold'>❓ Open Question:</span> Usually, folks will specify the TURNS server at port 443 to disguise TURN traffic as HTTPS traffic. Might we be losing certain connections over strict firewalls here by specifying port 5349 as the default TURNS server port?</li>
+                                </ul>
+                            </li>
+                            <li>The secure TURN server running on the same host as Reticulum at the TURN port specified by Reticulum with the protocol forced to TCP.</li>
+                        </ol>
+                        <p>Then, the client code always adds two public STUN servers to its list of ICE candidates.</p>
+                    </div>
+                </div>
+
+                <p>After candidate gathering, those two WebRTC endpoints will perform <i>candidate nomination</i> and then <i>candidate selection</i>, determining together which of those routes is most optimal.</p>
+                <p>In Hubs' case, third-party software libraries handle much of candidate nomination and selection. You can learn more about the ways the Hubs client and Dialog perform candidate nomination and selection by skipping to <a className='underline' href="#mediasoup-transport">the Mediasoup Transport section of this document.</a></p>
             </div>
         </div>
     )
 }
 
-export const CommunicationDataFlow = ({ }) => {
+export const CommunicationDataFlow = ({ darkThemeEnabled }) => {
     return (
         <div className='mt-4 pt-4 w-full max-w-4xl space-y-8 p-2 md:p-4'>
             <div>
@@ -206,7 +262,7 @@ export const CommunicationDataFlow = ({ }) => {
 
             <SFU />
 
-            <ICESTUNTURN />
+            <ICESTUNTURN darkThemeEnabled={darkThemeEnabled} />
         </div>
     )
 }

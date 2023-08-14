@@ -320,7 +320,7 @@ const MediasoupSFUTransport = ({ darkThemeEnabled }) => {
         <div className='w-full space-y-2'>
             <p>In <i>both</i> the client and server contexts, a Mediasoup <code>Transport</code> is a JavaScript class that uses the network to <span className="font-semibold">connect a client-side Mediasoup Device to a server-side Mediasoup Router</span>. A Transport enables sending media via a Producer or receving media via a Consumer, but not both at the same time.</p>
             <p>A Mediasoup Transport makes use of <a className='underline' target="_blank" href='https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection'>the <code>RTCPeerConnection</code> WebRTC interface<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>.</p>
-            <p>In the context of Transports, it's important to understand STUN, TURN, and ICE. For a refresher, <a className='underline' href="#STUN-TURN-and-ICE">tap here to scroll up to the "STUN, TURN, and ICE" section of this document.</a></p>
+            <p>In the context of Transports, it's important to understand ICE, STUN, and TURN. For a refresher, <a className='underline' href="#ICE-STUN-and-TURN">tap here to scroll up to the "ICE, STUN, and TURN" section of this document.</a></p>
 
             <div className='!mt-4 p-4 rounded-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
                 <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
@@ -342,8 +342,8 @@ const MediasoupSFUTransport = ({ darkThemeEnabled }) => {
             if (!this._sendTransport?._closed) {
                 await this.iceRestart(this._sendTransport);
             } else {
-                const { host, port, turn } = this._serverParams;
-                const iceServers = this.getIceServers(host, port, turn);
+                const { host, turn } = this._serverParams;
+                const iceServers = this.getIceServers(host, turn);
                 await this.recreateSendTransport(iceServers);
             }
         } catch (err) {
@@ -435,9 +435,9 @@ const MediasoupSFUTransport = ({ darkThemeEnabled }) => {
                     <ul className='list-disc ml-4'>
                         <li><span className='font-semibold'>ID:</span> A string used to uniquely identify the Transport.</li>
                         <li><span className='font-semibold'>ICE Parameters:</span> Information used to authenticate with the specified ICE server.</li>
-                        <li><span className='font-semibold'>ICE Candidates:</span></li>
-                        <li><span className='font-semibold'>DTLS Parameters:</span></li>
-                        <li><span className='font-semibold'>SCTP Parameters:</span></li>
+                        <li><span className='font-semibold'>ICE Candidates:</span> ❓ TODO ❓</li>
+                        <li><span className='font-semibold'>DTLS Parameters:</span> ❓ TODO ❓</li>
+                        <li><span className='font-semibold'>SCTP Parameters:</span> ❓ TODO ❓</li>
                     </ul>
                 </div>
             </div>

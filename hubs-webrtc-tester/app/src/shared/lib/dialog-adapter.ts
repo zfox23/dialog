@@ -123,7 +123,7 @@ export class DialogAdapter {
         });
     }
 
-    private _getIceServers({ host, port, turn }) {
+    private _getIceServers({ host, turn }) {
         const iceServers: IceServers[] = [];
 
         if (turn && turn.enabled) {
