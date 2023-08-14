@@ -1,6 +1,7 @@
 import React from 'react';
 import Divider from '../Divider';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid';
+import { HubsDivider } from '../HubsDivider';
 
 export const Introduction = ({ }) => {
     return (
@@ -19,6 +20,8 @@ export const Introduction = ({ }) => {
             </ul>
 
             <p>If you have additional questions about Hubs or Hubs' use of WebRTC, Mozilla developers are available to answer your questions on <a className='underline' target="_blank" href='https://discord.com/invite/sBMqSjCndj'>the Hubs Discord server<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>.</p>
+
+            <HubsDivider className='w-full max-w-6xl' />
         </div>
     )
 }

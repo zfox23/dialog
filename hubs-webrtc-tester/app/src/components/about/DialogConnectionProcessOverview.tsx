@@ -1,6 +1,7 @@
 import React from 'react';
 import Divider from '../Divider';
 import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
+import { HubsDivider } from '../HubsDivider';
 
 export const DialogConnectionProcessOverview = ({ }) => {
     return (
@@ -17,6 +18,8 @@ export const DialogConnectionProcessOverview = ({ }) => {
                     <p><span className='font-semibold'>This outline does not cover error handling.</span> If an error occurs at any point during this complex connection process, the client must attempt to recover. There may be unhandled error cases in this process. Such error cases can be tough to find, and may be the source of unresolved WebRTC-related bugs.</p>
                 </div>
             </div>
+
+            <HubsDivider className='w-full max-w-6xl' />
         </div>
     )
 }

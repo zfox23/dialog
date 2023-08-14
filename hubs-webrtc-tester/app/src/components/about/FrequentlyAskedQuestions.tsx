@@ -4,11 +4,12 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { ChevronRightIcon, CodeBracketIcon } from '@heroicons/react/24/solid';
 import { Transition } from '@headlessui/react';
+import { HubsDivider } from '../HubsDivider';
 
 
 export const FrequentlyAskedQuestions = ({ darkThemeEnabled }) => {
     return (
-        <div className='mt-4 p-2 pt-4 w-full max-w-4xl'>
+        <div className='mt-4 p-2 pt-4 w-full max-w-4xl space-y-4'>
             <div>
                 <h2 id="faq" className='text-3xl font-semibold'><a href="#faq" className='hover:underline'>Frequently Asked Questions</a></h2>
                 <Divider className='!mt-1' />
@@ -47,6 +48,8 @@ export const FrequentlyAskedQuestions = ({ darkThemeEnabled }) => {
                     </div>
                 </div>
             </div>
+
+            <HubsDivider className='w-full max-w-6xl' />
         </div>
     )
 }

@@ -4,6 +4,8 @@ import { AcademicCapIcon, ArrowTopRightOnSquareIcon, CodeBracketIcon, Exclamatio
 import { StaticImage } from 'gatsby-plugin-image';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { AccordionPanel } from '../AccordionPanel';
+import { HubsDivider } from '../HubsDivider';
 
 const PeerToPeer = ({ }) => {
     return (
@@ -200,14 +202,15 @@ const ICESTUNTURN = ({ darkThemeEnabled }) => {
                     <Divider className='!mt-1' />
                     <p>During the ICE process, a WebRTC endpoint will perform <i>candidate gathering</i> to discover all of the potential ways it can connect to another WebRTC endpoint. Candidate gathering is programmed into the endpoint's application code. Here's what that code looks like for the Hubs client:</p>
 
-                    <div className='!mt-2 p-4 rounded-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
-                        <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
-                            <CodeBracketIcon className='text-slate-300 dark:text-slate-200/40 opacity-50' />
-                        </div>
-                        <div className='z-10 relative space-y-2 w-full'>
-                            <p>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/hubs/blob/master/src/naf-dialog-adapter.js'>hubs/naf-dialog-adapter.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; DialogAdapter &gt; getIceServers()</code>:</p>
-                            <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
-                                {`getIceServers(host, turn) {
+                    <AccordionPanel labelCollapsed='Show ICE Candidate Gathering Code & Explanation' labelExpanded='Hide ICE Candidate Gathering Code & Explanation'>
+                        <div className='p-4 rounded-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
+                            <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
+                                <CodeBracketIcon className='text-slate-300 dark:text-slate-200/40 opacity-50' />
+                            </div>
+                            <div className='z-10 relative space-y-2 w-full'>
+                                <p>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/hubs/blob/master/src/naf-dialog-adapter.js'>hubs/naf-dialog-adapter.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; DialogAdapter &gt; getIceServers()</code>:</p>
+                                <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
+                                    {`getIceServers(host, turn) {
     const iceServers = [];
 
     if (turn && turn.enabled) {
@@ -231,24 +234,25 @@ const ICESTUNTURN = ({ darkThemeEnabled }) => {
     iceServers.push({ urls: "stun:stun1.l.google.com:19302" }, { urls: "stun:stun2.l.google.com:19302" });
     return iceServers;
 }`
-                                }
-                            </SyntaxHighlighter>
-                            <p><span className="font-semibold">Translation:</span> This is the function on the Hubs client that performs ICE candidate gathering. The STUN/TURN information returned by this function will be passed to the candidate nomination and selection process.</p>
-                            <p>Whether TURN is enabled is determined by Reticulum, which is the server that orchestrates general networking between clients. If Reticulum determines that TURN is enabled, it passes the TURN server information to the client upon initial connection.</p>
-                            <p>Note that the Hubs client always uses TURN over TLS, which is shortened to <code>turns</code> when specified in an ICE candidate.</p>
-                            <p>If Reticulum's TURN information is passed to <code>getIceServers()</code>, the client will add the following two sets of TURN servers to its list of ICE candidates <i>per set of TURN servers specified by Reticulum</i>:</p>
-                            <ol className='ml-4 list-decimal'>
-                                <li>
-                                    <p>The secure TURN server running on the same host as Reticulum at the TURN port specified by Reticulum (as long as <code>force_tcp</code> is <i>not</i> present in Hubs' URL query parameters). The protocol used here will be UDP.</p>
-                                    <ul className='list-disc ml-4'>
-                                        <li><span className='font-semibold'>❓ Open Question:</span> Usually, folks will specify the TURNS server at port 443 to disguise TURN traffic as HTTPS traffic. Might we be losing certain connections over strict firewalls here by specifying port 5349 as the default TURNS server port?</li>
-                                    </ul>
-                                </li>
-                                <li>The secure TURN server running on the same host as Reticulum at the TURN port specified by Reticulum with the protocol forced to TCP.</li>
-                            </ol>
-                            <p>Then, the client code always adds two public STUN servers to its list of ICE candidates.</p>
+                                    }
+                                </SyntaxHighlighter>
+                                <p><span className="font-semibold">Translation:</span> This is the function on the Hubs client that performs ICE candidate gathering. The STUN/TURN information returned by this function will be passed to the candidate nomination and selection process.</p>
+                                <p>Whether TURN is enabled is determined by Reticulum, which is the server that orchestrates general networking between clients. If Reticulum determines that TURN is enabled, it passes the TURN server information to the client upon initial connection.</p>
+                                <p>Note that the Hubs client always uses TURN over TLS, which is shortened to <code>turns</code> when specified in an ICE candidate.</p>
+                                <p>If Reticulum's TURN information is passed to <code>getIceServers()</code>, the client will add the following two sets of TURN servers to its list of ICE candidates <i>per set of TURN servers specified by Reticulum</i>:</p>
+                                <ol className='ml-4 list-decimal'>
+                                    <li>
+                                        <p>The secure TURN server running on the same host as Reticulum at the TURN port specified by Reticulum (as long as <code>force_tcp</code> is <i>not</i> present in Hubs' URL query parameters). The protocol used here will be UDP.</p>
+                                        <ul className='list-disc ml-4'>
+                                            <li><span className='font-semibold'>❓ Open Question:</span> Usually, folks will specify the TURNS server at port 443 to disguise TURN traffic as HTTPS traffic. Might we be losing certain connections over strict firewalls here by specifying port 5349 as the default TURNS server port?</li>
+                                        </ul>
+                                    </li>
+                                    <li>The secure TURN server running on the same host as Reticulum at the TURN port specified by Reticulum with the protocol forced to TCP.</li>
+                                </ol>
+                                <p>Then, the client code always adds two public STUN servers to its list of ICE candidates.</p>
+                            </div>
                         </div>
-                    </div>
+                    </AccordionPanel>
 
                     <p>After candidate gathering, those two WebRTC endpoints will perform <i>candidate nomination</i> and then <i>candidate selection</i>, determining together which of those routes is most optimal.</p>
                     <p>In Hubs' case, third-party software libraries handle much of candidate nomination and selection. You can learn more about the ways the Hubs client and Dialog perform candidate nomination and selection by skipping to <a className='underline' href="#mediasoup-transport">the Mediasoup Transport section of this document.</a></p>
@@ -273,6 +277,8 @@ export const CommunicationDataFlow = ({ darkThemeEnabled }) => {
             <SFU />
 
             <ICESTUNTURN darkThemeEnabled={darkThemeEnabled} />
+
+            <HubsDivider className='w-full max-w-6xl' />
         </div>
     )
 }

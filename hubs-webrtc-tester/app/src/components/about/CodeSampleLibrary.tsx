@@ -4,6 +4,8 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { ChevronRightIcon, CodeBracketIcon } from '@heroicons/react/24/solid';
 import { Transition } from '@headlessui/react';
+import { AccordionPanel } from '../AccordionPanel';
+import { HubsDivider } from '../HubsDivider';
 
 const CodeSampleLibraryCoturn = ({ darkThemeEnabled }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -17,28 +19,15 @@ const CodeSampleLibraryCoturn = ({ darkThemeEnabled }) => {
                 <li>How, upon initial connection to Dialog, the client code makes use of that TURN information</li>
             </ol>
             <p>TODO: Make sure that the Elixir function below is what's actually run when someone joins a Hubs room. Although the <code>.receive(&quot;ok&quot;, async data =&gt; &#123;</code> is throwing me off.</p>
-            <div className='w-full flex flex-col overflow-clip relative'>
-                <button className={`z-20 bg-slate-100 hover:underline border-slate-300 dark:border-slate-400/20 border-b-2 dark:bg-slate-500/20 text-lg font-semibold w-full text-left p-4 flex items-center ${isExpanded ? 'rounded-t-md' : 'rounded-md'}`} onClick={() => { setIsExpanded(!isExpanded); }}>
-                    <ChevronRightIcon className={`w-5 h-5 mr-2 transition-transform inline ${isExpanded ? 'rotate-90' : 'rotate-0'}`} />
-                    <p>{isExpanded ? "Hide" : "Show"} <code>coturn</code> Code</p>
-                </button>
-                <Transition
-                    className='space-y-4 w-full z-10'
-                    show={isExpanded}
-                    enter="ease-in duration-300"
-                    enterFrom="opacity-0 -translate-y-full"
-                    enterTo="opacity-100 translate-y-0"
-                    leave="ease-out duration-150"
-                    leaveFrom="opacity-100 translate-y-0"
-                    leaveTo="opacity-0 -translate-y-full">
-                    <div className='p-4 rounded-b-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
-                        <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
-                            <CodeBracketIcon className='text-slate-300 dark:text-slate-200/40 opacity-50' />
-                        </div>
-                        <div className='z-10 relative space-y-2 w-full'>
-                            <h5 className='text-lg font-semibold'>Reticulum (Server) Code</h5>
-                            <SyntaxHighlighter className="transition-colors rounded-md" language="elixir" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
-                                {`# reticulum/lib/ret_web/views/api/v1/hub_view.ex
+            <AccordionPanel labelCollapsed='Show Coturn Code' labelExpanded='Hide Coturn Code'>
+                <div className='p-4 rounded-b-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
+                    <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
+                        <CodeBracketIcon className='text-slate-300 dark:text-slate-200/40 opacity-50' />
+                    </div>
+                    <div className='z-10 relative space-y-2 w-full'>
+                        <h5 className='text-lg font-semibold'>Reticulum (Server) Code</h5>
+                        <SyntaxHighlighter className="transition-colors rounded-md" language="elixir" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
+                            {`# reticulum/lib/ret_web/views/api/v1/hub_view.ex
 def render("show.json", %{hub: %Hub{scene: %Scene{}} = hub, embeddable: embeddable}) do
     hub |> render_with_scene(embeddable)
 end
@@ -88,14 +77,14 @@ config :ret, Ret.Coturn, realm: "ret"
 # reticulum/config/prod.exs
 config :ret, page_auth: [username: "", password: "", realm: "Reticulum"]
 `}
-                            </SyntaxHighlighter>
-                        </div>
+                        </SyntaxHighlighter>
+                    </div>
 
-                        <div>
-                            <h5 className='text-lg font-semibold mt-4'>Client Code</h5>
-                            <Divider />
-                            <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
-                                {`//hubs/src/hub.js > "DOMContentLoaded" callback
+                    <div>
+                        <h5 className='text-lg font-semibold mt-4'>Client Code</h5>
+                        <Divider />
+                        <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
+                            {`//hubs/src/hub.js > "DOMContentLoaded" callback
 document.addEventListener("DOMContentLoaded", async () => {
     ...
     const hubPhxChannel = socket.channel(\`hub:\${hubId}\`, APP.hubChannelParamsForPermsToken(oauthFlowPermsToken));
@@ -178,11 +167,10 @@ getIceServers(host, turn) {
     iceServers.push({ urls: "stun:stun1.l.google.com:19302" }, { urls: "stun:stun2.l.google.com:19302" });
     return iceServers;
 }`}
-                            </SyntaxHighlighter>
-                        </div>
+                        </SyntaxHighlighter>
                     </div>
-                </Transition>
-            </div>
+                </div>
+            </AccordionPanel>
         </div>
     )
 }
@@ -207,6 +195,8 @@ export const CodeSampleLibrary = ({ darkThemeEnabled }) => {
                     </div>
                 </div>
             </div>
+
+            <HubsDivider className='w-full max-w-6xl' />
         </div>
     )
 }

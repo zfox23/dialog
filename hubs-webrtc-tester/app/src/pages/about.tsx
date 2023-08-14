@@ -20,6 +20,7 @@ import { Link } from 'gatsby';
 import { linearScale } from '../shared/lib/utilities';
 import { CodeSampleLibrary } from '../components/about/CodeSampleLibrary';
 import { SEO } from '../components/SEO';
+import { HubsDivider } from '../components/HubsDivider';
 
 const TableOfContents = ({ className }: { className?: string }) => {
     const headings = useHeadings();

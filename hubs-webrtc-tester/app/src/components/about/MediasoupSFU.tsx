@@ -445,6 +445,51 @@ const MediasoupSFUTransport = ({ darkThemeEnabled }) => {
     )
 }
 
+const Device = ({ darkThemeEnabled }) => {
+    return (
+        <div className='w-full'>
+            <h4 id="mediasoup-device"><a href="#mediasoup-device" className='hover:underline font-semibold text-xl'>Mediasoup <code>Device</code></a></h4>
+            <div className='!mt-0'>
+                <a className='underline text-xs' target="_blank" href='https://mediasoup.org/documentation/v3/mediasoup-client/api/#Device'><code>(mediasoup client docs)</code><ArrowTopRightOnSquareIcon className='h-3 w-3 ml-0.5 -top-0.5 relative inline-block' /></a>
+            </div>
+            <div className='!mt-2 flex w-full'>
+                <div className='bg-blue-200 dark:bg-blue-900 shrink-0 w-[2px] rounded-md' />
+                <div className='space-y-4 !mt-0 w-full pl-2'>
+
+                    <div className='w-full space-y-2'>
+                        <p>A Mediasoup <code>Device</code> is a client-side JavaScript class that represents an endpoint used to connect to a Mediasoup Router to send and/or receive media.</p>
+                        <p>A <code>Device</code> is an application's entrypoint into the Mediasoup client library; <a className='underline' href="#mediasoup-transport"><code>Transport</code>s</a> are created from <code>Device</code>s, and <a className='underline' href="#mediasoup-producer"><code>Producer</code>s</a>/<a className='underline' href="#mediasoup-consumer"><code>Consumer</code>s</a> are then created from <code>Transport</code>s.</p>
+                        
+                        <div className='!mt-4 p-4 rounded-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
+                            <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
+                                <CodeBracketIcon className='text-slate-300 dark:text-slate-200/40 opacity-50' />
+                            </div>
+                            <div className='z-10 relative space-y-2 w-full'>
+                                <p className='font-semibold'><code>Device</code> Example Usage</p>
+                                <p>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/hubs/blob/master/src/naf-dialog-adapter.js'>hubs/naf-dialog-adapter.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; DialogAdapter &gt; _joinRoom()</code>:</p>
+                                <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
+                                    {`async _joinRoom() {
+    this._mediasoupDevice = new mediasoupClient.Device({});
+
+    const routerRtpCapabilities = await this._protoo.request("getRouterRtpCapabilities");
+
+    await this._mediasoupDevice.load({ routerRtpCapabilities });
+    ...
+}`}
+                                </SyntaxHighlighter>
+                                <p><span className="font-semibold">Translation:</span> <code>_joinRoom()</code> is called as soon as we open the Protoo signaling connection.</p>
+                                <p>Immediately after that happens, we instantiate a new Mediasoup <code>Device</code>, specifying no options. By not specifying any options to this function, we're letting the Mediasoup library choose a suitable WebRTC handler associated with the client's current browser.</p>
+                                <p>We then ask the Protoo signaling server for the associated Mediasoup Router's RTP capabilities. RTP capabilities define what <a className='underline' target="_blank" href='https://github.com/versatica/mediasoup/blob/v3/node/src/supportedRtpCapabilities.ts'>media codecs and RTP extensions<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> the router supports.</p>
+                                <p>Given those RTP capabilities, we can then call <code>load()</code> on our <code>Device</code>. The <code>Device</code> must be loaded and ready in order to produce and consume media.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const Transport = ({ darkThemeEnabled }) => {
     return (
         <div className='w-full'>
@@ -492,6 +537,7 @@ export const MediasoupSFU = ({ darkThemeEnabled }) => {
             <div className='!mt-4 space-y-6 w-full max-w-4xl p-2'>
                 <Producer darkThemeEnabled={darkThemeEnabled} />
                 <Consumer darkThemeEnabled={darkThemeEnabled} />
+                <Device darkThemeEnabled={darkThemeEnabled} />
                 <Transport darkThemeEnabled={darkThemeEnabled} />
                 <div>
                     <h4 id="mediasoup-under-construction" className='text-lg font-semibold'>Mediasoup - &lt;Other Thing&gt; 👷</h4>

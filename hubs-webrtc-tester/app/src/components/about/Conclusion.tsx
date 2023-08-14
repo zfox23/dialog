@@ -1,5 +1,6 @@
 import React from 'react';
 import Divider from '../Divider';
+import { HubsDivider } from '../HubsDivider';
 
 export const Conclusion = ({ }) => {
     return (
@@ -7,6 +8,8 @@ export const Conclusion = ({ }) => {
             <h2 id="conclusion" className='text-3xl font-semibold'><a href="#conclusion" className='hover:underline'>Conclusion</a></h2>
             <Divider className='!mt-1' />
             <p>All done!</p>
+
+            <HubsDivider className='w-full max-w-6xl' />
         </div>
     )
 }
