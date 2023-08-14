@@ -539,11 +539,6 @@ export const MediasoupSFU = ({ darkThemeEnabled }) => {
                 <Consumer darkThemeEnabled={darkThemeEnabled} />
                 <Device darkThemeEnabled={darkThemeEnabled} />
                 <Transport darkThemeEnabled={darkThemeEnabled} />
-                <div>
-                    <h4 id="mediasoup-under-construction" className='text-lg font-semibold'>Mediasoup - &lt;Other Thing&gt; 👷</h4>
-                    <Divider />
-                    <p>⚠️ UNDER CONSTRUCTION (just like in the old days of web 1.0) ⚠️</p>
-                </div>
             </div>
         </div>
     )
