@@ -8,7 +8,7 @@ import { Transition } from '@headlessui/react';
 
 export const FrequentlyAskedQuestions = ({ darkThemeEnabled }) => {
     return (
-        <div className='mt-4 p-2 md:p-4 pt-4 w-full max-w-4xl'>
+        <div className='mt-4 p-2 pt-4 w-full max-w-4xl'>
             <div>
                 <h2 id="faq" className='text-3xl font-semibold'><a href="#faq" className='hover:underline'>Frequently Asked Questions</a></h2>
                 <Divider className='!mt-1' />

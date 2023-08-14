@@ -74,7 +74,7 @@ const IndexPage = ({ }) => {
             <div className='flex flex-col w-full items-center'>
                 <HeaderPanel />
 
-                <div className='p-2 md:p-4 flex flex-col w-full items-center'>
+                <div className='p-2 flex flex-col w-full items-center'>
                     <ConnectDisconnectPanel onConnectClicked={onConnectClicked} onDisconnectClicked={onDisconnectClicked} dialogHost={dialogHost} setDialogHost={setDialogHost} dialogPort={dialogPort} setDialogPort={setDialogPort} hubID={hubID} setHubID={setHubID} sessionID={sessionID} setSessionID={setSessionID} />
 
                     <AudioInputOutputPanel dialogAdapter={dialogAdapter} />

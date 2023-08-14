@@ -189,7 +189,7 @@ getIceServers(host, turn) {
 
 export const CodeSampleLibrary = ({ darkThemeEnabled }) => {
     return (
-        <div className='mt-4 p-2 md:p-4 pt-4 w-full max-w-4xl space-y-8'>
+        <div className='mt-4 p-2 pt-4 w-full max-w-4xl space-y-8'>
             <div className='space-y-4'>
                 <h2 id="code-samples" className='text-3xl font-semibold'><a href="#code-samples" className='hover:underline'>Code Sample Library (Advanced)</a></h2>
                 <Divider className='!mt-1' />

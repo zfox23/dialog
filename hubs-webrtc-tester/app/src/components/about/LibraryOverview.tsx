@@ -4,7 +4,7 @@ import { AcademicCapIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/
 
 export const LibraryOverview = ({ }) => {
     return (
-        <div className='space-y-4 w-full max-w-4xl p-2 md:p-4'>
+        <div className='space-y-4 w-full max-w-4xl p-2'>
             <h2 id="hubs-webrtc-libraries" className='text-3xl font-semibold'><a href="#hubs-webrtc-libraries" className='hover:underline'>Hubs' WebRTC Libraries</a></h2>
             <h3 className='text-sm !mt-0'>Protoo and Mediasoup</h3>
             <Divider className='!mt-1' />
