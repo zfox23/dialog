@@ -17,11 +17,11 @@ export const dialogMsg = (level: DialogLogLevel, context: string, message: strin
 // Used to avoid SSR issues when building this app for production.
 export const isBrowser = typeof window !== "undefined";
 
-export const clamp = (val, min, max) => {
+export const clamp = (val: number, min: number, max: number) => {
     return Math.min(Math.max(val, min), max);
 }
 
-export const linearScale = (factor, minInput, maxInput, minOutput, maxOutput, shouldClamp = true) => {
+export const linearScale = (factor: number, minInput: number, maxInput: number, minOutput: number, maxOutput: number, shouldClamp = true) => {
     if (shouldClamp) {
         factor = clamp(factor, minInput, maxInput);
     }

@@ -1,6 +1,6 @@
 import * as mediasoupClient from "mediasoup-client";
 import protooClient from "protoo-client";
-import { DialogLogLevel, IceServers, DialogConnectionParams } from "./dialog-interfaces";
+import { DialogLogLevel, IceServers, DialogConnectionParams, TurnInfo, DataFromReticulum } from "./dialog-interfaces";
 import { dialogMsg } from "./utilities";
 import { DialogTransportController } from "./dialog-transport-controller";
 
@@ -12,8 +12,8 @@ export class DialogAdapter {
     _mediasoupDevice: mediasoupClient.Device | null;
     _protooPeer: protooClient.Peer | null;
 
-    _dialogConnectionParams: DialogConnectionParams;
-    _signalingPeerID: string;
+    _dialogConnectionParams: DialogConnectionParams | null;
+    _signalingPeerID: string | null;
 
     _transportController: DialogTransportController;
 
@@ -22,6 +22,9 @@ export class DialogAdapter {
 
         this._mediasoupDevice = null;
         this._protooPeer = null;
+
+        this._dialogConnectionParams = null;
+        this._signalingPeerID = null;
 
         this._transportController = new DialogTransportController();
     }
@@ -100,7 +103,7 @@ export class DialogAdapter {
                 }
 
                 case "consumerLayersChanged": {
-                    const { consumerId, spatialLayer, temporalLayer } = notification.data;
+                    const { consumerId, spatialLayer, temporalLayer }: { consumerId: string, spatialLayer: number, temporalLayer: number } = notification.data;
                     this._transportController.handleConsumerLayersChanged(consumerId, spatialLayer, temporalLayer);
                     break;
                 }
@@ -123,13 +126,17 @@ export class DialogAdapter {
         });
     }
 
-    private _getIceServers({ host, turn }) {
+    private _getIceServers({ host, turn }: { host: string, turn: any }) {
         const iceServers: IceServers[] = [];
 
+        if (!this._dialogConnectionParams) {
+            return iceServers;
+        }
+
         if (turn && turn.enabled) {
-            turn.transports.forEach(ts => {
+            turn.transports.forEach((ts: any) => {
                 // Try both TURN DTLS and TCP/TLS
-                if (!this._dialogConnectionParams.forceTcp) {
+                if (!this._dialogConnectionParams!.forceTcp) {
                     iceServers.push({
                         urls: `turns:${host}:${ts.port}`,
                         username: turn.username,
@@ -155,6 +162,11 @@ export class DialogAdapter {
             return;
         }
 
+        if (!this._dialogConnectionParams) {
+            dialogMsg(DialogLogLevel.Error, `DialogAdapter._joinDialogRoom()`, `\`this._dialogConnectionParams\` is falsey!`);
+            return;
+        }
+
         this._mediasoupDevice = new mediasoupClient.Device({});
         const routerRtpCapabilities = await this._protooPeer.request("getRouterRtpCapabilities");
         await this._mediasoupDevice.load({ routerRtpCapabilities });
@@ -174,7 +186,7 @@ export class DialogAdapter {
         dialogMsg(DialogLogLevel.Log, `_joinDialogRoom()`, `Joined Dialog Room!`);
     }
 
-    public async connectToDialog({ dialogConnectionParams, dataFromReticulum }) {
+    public async connectToDialog({ dialogConnectionParams, dataFromReticulum }: { dialogConnectionParams: DialogConnectionParams, dataFromReticulum: DataFromReticulum }) {
         return new Promise((resolve, reject) => {
             if (this.signalingState === "connecting" || this.signalingState === "connected" || this.signalingState === "failed") {
                 // "failed" indicates that we're actively retrying. If we fail enough retries, we'll transition to "closed".
@@ -215,7 +227,7 @@ export class DialogAdapter {
 
     public disconnectFromDialog() {
         if (this._protooPeer) {
-            this._protooPeer.removeAllListeners();
+            (this._protooPeer as any).removeAllListeners();
             if (!this._protooPeer.closed) {
                 dialogMsg(DialogLogLevel.Log, `disconnectFromDialog()`, `Closing Protoo signaling connection...`);
                 this._protooPeer.close();

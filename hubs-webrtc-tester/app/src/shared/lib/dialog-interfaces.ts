@@ -13,6 +13,11 @@ export interface DialogConnectionParams {
     iceTransportPolicy: RTCIceTransportPolicy;
 }
 
+export interface DataFromReticulum {
+    reticulumHubID: string;
+    reticulumSessionID: string;
+}
+
 export interface IceServers {
     urls: string;
     username?: string;

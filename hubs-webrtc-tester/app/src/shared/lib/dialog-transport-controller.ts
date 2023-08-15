@@ -16,6 +16,9 @@ export class DialogTransportController {
     _consumers: Map<string, Consumer>;
 
     constructor() {
+        this._mediasoupDevice = null;
+        this._protooPeer = null;
+
         this._sendTransport = null;
         this._recvTransport = null;
 
@@ -24,12 +27,12 @@ export class DialogTransportController {
         this._consumers = new Map();
     }
 
-    public init(mediasoupDevice, protooPeer) {
+    public init(mediasoupDevice: mediasoupClient.Device, protooPeer: protooClient.Peer) {
         this._mediasoupDevice = mediasoupDevice;
         this._protooPeer = protooPeer;
     }
 
-    public async createTransports(iceServers, iceTransportPolicy) {
+    public async createTransports(iceServers: RTCIceServer[], iceTransportPolicy: RTCIceTransportPolicy) {
         await this._createSendTransport(iceServers, iceTransportPolicy);
         await this._createRecvTransport(iceServers, iceTransportPolicy);
     }
@@ -39,7 +42,7 @@ export class DialogTransportController {
         this._recvTransport && this._recvTransport.close();
     }
 
-    private _removeConsumer(consumerId) {
+    private _removeConsumer(consumerId: string) {
         dialogMsg(DialogLogLevel.Log, `recvTransport Consumer`, `Removing consumer with ID: \`${consumerId}\``);
         this._consumers.delete(consumerId);
     }
@@ -129,12 +132,12 @@ export class DialogTransportController {
                 callback({ id });
             } catch (error) {
                 dialogMsg(DialogLogLevel.Error, `DialogTransportController._sendTransport`, `When sending "produce" request to Protoo, got error:\n${error}`);
-                errback(error);
+                errback(error as Error);
             }
         });
     }
 
-    private async _createSendTransport(iceServers, iceTransportPolicy) {
+    private async _createSendTransport(iceServers: RTCIceServer[], iceTransportPolicy: RTCIceTransportPolicy) {
         if (!this._protooPeer) {
             dialogMsg(DialogLogLevel.Error, `DialogTransportController._createSendTransport()`, `\`this._protooPeer\` is falsey!`);
             return;
@@ -217,7 +220,7 @@ export class DialogTransportController {
         );
     }
 
-    private async _createRecvTransport(iceServers, iceTransportPolicy) {
+    private async _createRecvTransport(iceServers: RTCIceServer[], iceTransportPolicy: RTCIceTransportPolicy) {
         if (!this._protooPeer) {
             dialogMsg(DialogLogLevel.Error, `DialogTransportController._createRecvTransport()`, `\`this._protooPeer\` is falsey!`);
             return;
@@ -301,7 +304,7 @@ export class DialogTransportController {
         }
     }
 
-    public async handleNewConsumer(request, accept, reject) {
+    public async handleNewConsumer(request: any, accept: Function, reject: Function) {
         if (!this._recvTransport) {
             dialogMsg(DialogLogLevel.Error, `Protoo Signaling: 'newConsumer'`, `\`this._recvTransport\` is falsey!`);
             return;
@@ -340,7 +343,7 @@ export class DialogTransportController {
         }
     }
 
-    public async handleConsumerClosed(consumerId) {
+    public async handleConsumerClosed(consumerId: string) {
         const consumer = this._consumers.get(consumerId);
 
         if (!consumer) {
@@ -352,7 +355,7 @@ export class DialogTransportController {
         this._removeConsumer(consumer.id);
     }
 
-    public handleConsumerLayersChanged(consumerId, spatialLayer, temporalLayer) {
+    public handleConsumerLayersChanged(consumerId: string, spatialLayer: number, temporalLayer: number) {
         dialogMsg(DialogLogLevel.Log, `DialogTransportController.handleConsumerLayersChanged()`, `consumerId: \`${consumerId}\` spatialLayer: \`${spatialLayer}\` temporalLayer: \`${temporalLayer}\``);
 
         const consumer = this._consumers.get(consumerId);
@@ -363,7 +366,7 @@ export class DialogTransportController {
         }
     }
 
-    public handleConsumerScore(consumerId, score) {
+    public handleConsumerScore(consumerId: string, score: number) {
         dialogMsg(DialogLogLevel.Log, `DialogTransportController.handleConsumerScore`, `consumerId: \`${consumerId}\` score: \`${JSON.stringify(score)}\``);
 
         const consumer = this._consumers.get(consumerId);

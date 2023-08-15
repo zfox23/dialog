@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Layout } from "../components/Layout";
 import { DialogAdapter } from '../shared/lib/dialog-adapter';
-import { DialogConnectionParams, LocalMediaStreamData } from '../shared/lib/dialog-interfaces';
+import { DataFromReticulum, DialogConnectionParams, LocalMediaStreamData } from '../shared/lib/dialog-interfaces';
 import { isBrowser } from '../shared/lib/utilities';
 import { ConnectDisconnectPanel } from '../components/panels/ConnectDisconnectPanel';
 import { RemoteAudioStreamsPanel } from '../components/panels/RemoteAudioStreamsPanel';
@@ -48,7 +48,7 @@ const IndexPage = ({ }) => {
             iceTransportPolicy: "all",
             //iceTransportPolicy: qs.get("force_tcp") || qs.get("force_turn") ? "relay" : "all"
         }
-        const dataFromReticulum = {
+        const dataFromReticulum: DataFromReticulum = {
             reticulumHubID: hubID,
             reticulumSessionID: sessionID
         }
