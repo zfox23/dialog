@@ -19,7 +19,7 @@ export const HeaderPanel = ({ }) => {
                 </div>
                 <div className='z-10 relative space-y-4'>
                     <p><span className='font-semibold'>Your feedback will help improve this tool!</span> You can submit questions and comments about this tool via Discord DM (@ZachAtMozilla) or <a className='underline' target="_blank" href='https://discord.com/invite/sBMqSjCndj'>the "🔒private-dev" channel on the Hubs Discord server<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>.</p>
-                    <p><span className='font-semibold'>This tool is under early and active development.</span> Some functionality may not work as expected.</p>
+                    <p><span className='font-semibold'>This tool is under active development.</span> Some functionality may not work as expected.</p>
                 </div>
             </div>
         </header>

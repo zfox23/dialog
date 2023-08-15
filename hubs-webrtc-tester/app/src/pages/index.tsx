@@ -79,9 +79,9 @@ const IndexPage = ({ }) => {
 
                     <AudioInputOutputPanel dialogAdapter={dialogAdapter} />
 
-                    <LogPanel darkThemeEnabled={darkThemeEnabled} />
-
                     <RemoteAudioStreamsPanel dialogAdapter={dialogAdapter} />
+
+                    <LogPanel darkThemeEnabled={darkThemeEnabled} />
                 </div>
             </div>
         </Layout>

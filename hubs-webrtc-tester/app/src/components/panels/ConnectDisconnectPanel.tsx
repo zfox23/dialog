@@ -19,6 +19,7 @@ export const ConnectDisconnectPanel = ({ onConnectClicked, onDisconnectClicked, 
                     <ul className='w-full max-w-xl list-disc mx-2 mt-2 p-2 pl-6 rounded-md bg-yellow-50 dark:bg-yellow-800'>
                         <li>Ensure that Dialog is running first (unless you're testing that failure case).</li>
                         <li>For convenience, the connection parameters in this form are saved to local storage for future sessions once you tap "Connect".</li>
+                        <li>If you're running Dialog locally, and you have set up your Hosts file to redirect <code>hubs.local</code> to <code>127.0.0.1</code>, you can point this Tester to a local Dialog instantiation despite this Tester being hosted remotely.</li>
                     </ul> : null
                 }
             </div>
