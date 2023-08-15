@@ -428,17 +428,18 @@ const MediasoupSFUTransport = ({ darkThemeEnabled }) => {
     }
 }`}
                     </SyntaxHighlighter>
-                    <p><span className="font-semibold">Translation:</span> The client sends a <code>"createWebRtcTransport"</code> signaling request via Protoo for its Send Transport and Receive Tranport separately upon first joining the Dialog Room.</p>
+                    <p><span className="font-semibold">Translation:</span> The client sends a <code>"createWebRtcTransport"</code> signaling request via Protoo for its Send Transport and Receive Transport separately upon first joining the Dialog Room.</p>
                     <p>When the Dialog server receives such a signaling request, it must create a server-side Transport given certain parameters from the client and from Dialog's configuration. Gathering and setting those parameters is a majority of the code above.</p>
                     <p>Once the new Transport is created, it is associated with the Protoo Peer who sent the request to create a new Transport.</p>
                     <p>Finally, data about the Transport is sent back to the client that requested the new Transport. That data includes the Transport's:</p>
                     <ul className='list-disc ml-4'>
-                        <li><span className='font-semibold'>ID:</span> A string used to uniquely identify the Transport.</li>
-                        <li><span className='font-semibold'>ICE Parameters:</span> Information used to authenticate with the specified ICE server.</li>
-                        <li><span className='font-semibold'>ICE Candidates:</span> ❓ TODO ❓</li>
-                        <li><span className='font-semibold'>DTLS Parameters:</span> ❓ TODO ❓</li>
-                        <li><span className='font-semibold'>SCTP Parameters:</span> ❓ TODO ❓</li>
+                        <li><span className='font-semibold'>ID:</span> A string used to uniquely identify the Transport</li>
+                        <li><span className='font-semibold'>ICE Parameters:</span> Information used to authenticate with the specified ICE server</li>
+                        <li><span className='font-semibold'>ICE Candidates:</span> The ICE servers at which the Transport can be reached</li>
+                        <li><span className='font-semibold'>DTLS Parameters:</span> Encryption information used to create a secure Transport connection</li>
+                        <li><span className='font-semibold'>SCTP Parameters:</span> SCTP is disabled in Hubs' case, so this will be <code>undefined</code></li>
                     </ul>
+                    <p>The client will then use that information to create a Send or Receive Transport locally. Subsequently, after the client's Transport is connected, the client will send a <code>"connectWebRtcTransport"</code> signaling request to establish a secure DTLS connection.</p>
                 </div>
             </div>
         </div>

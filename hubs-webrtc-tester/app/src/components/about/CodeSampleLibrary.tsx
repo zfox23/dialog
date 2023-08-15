@@ -13,12 +13,12 @@ const CodeSampleLibraryCoturn = ({ darkThemeEnabled }) => {
     return (
         <div className='space-y-4'>
             <h4 id="code-sample-coturn" className='text-xl font-semibold'><a className="hover:underline" href="#code-sample-coturn">Sending TURN Information to the Hubs Client</a></h4>
-            <p>By following the relatively complex code path below - which is written in chronological order - you will learn:</p>
+            <p>By following the chronological code path below, you will learn:</p>
             <ol className='list-disc ml-4'>
                 <li>How the Reticulum server code determines what TURN information to send to the client</li>
                 <li>How, upon initial connection to Dialog, the client code makes use of that TURN information</li>
             </ol>
-            <p>TODO: Make sure that the Elixir function below is what's actually run when someone joins a Hubs room. Although the <code>.receive(&quot;ok&quot;, async data =&gt; &#123;</code> is throwing me off.</p>
+            <p>TODO: Make sure that the Elixir function below is what's actually run when someone joins a Hubs room. The <code>.receive(&quot;ok&quot;, async data =&gt; &#123;</code> is throwing me off.</p>
             <AccordionPanel labelCollapsed='Show Coturn Code' labelExpanded='Hide Coturn Code'>
                 <div className='p-4 rounded-b-md bg-slate-100 dark:bg-slate-500/20 relative w-full'>
                     <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>

@@ -129,7 +129,7 @@ const AboutPage = ({ }) => {
 
                     <HubsWebRTCLibraries darkThemeEnabled={darkThemeEnabled} />
 
-                    <DialogConnectionProcessOverview />
+                    <DialogConnectionProcessOverview darkThemeEnabled={darkThemeEnabled} />
 
                     <FrequentlyAskedQuestions darkThemeEnabled={darkThemeEnabled} />
 

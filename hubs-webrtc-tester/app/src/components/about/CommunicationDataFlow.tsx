@@ -66,7 +66,7 @@ const SFU = ({ }) => {
                     <AcademicCapIcon className='text-green-300 dark:text-green-600/40 opacity-50' />
                 </div>
                 <div className='z-10 relative space-y-2'>
-                    <p><span className='font-semibold'>The Mozilla Hubs SFU is named Dialog.</span> Dialog is written in NodeJS. You can take a look at Dialog's source code <a className='underline' target="_blank" href='https://github.com/mozilla/dialog'>here on GitHub<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>.</p>
+                    <p><span className='font-semibold'>The Mozilla Hubs SFU is contained within a server component named Dialog.</span> Dialog is written in NodeJS. You can take a look at Dialog's source code <a className='underline' target="_blank" href='https://github.com/mozilla/dialog'>here on GitHub<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>.</p>
                     <p>Dialog is one of a few named server components that power Hubs. <span className='font-semibold'>Reticulum</span> is the name of the central server which orchestrates networking between clients and gives information to each client about the Dialog instance associated with a Hub.</p>
                 </div>
             </div>
