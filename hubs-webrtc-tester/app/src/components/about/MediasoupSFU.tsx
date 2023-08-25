@@ -328,7 +328,7 @@ const MediasoupSFUTransport = ({ darkThemeEnabled }) => {
                 </div>
                 <div className='z-10 relative space-y-2 w-full'>
                     <p className='font-semibold'><code>Transport</code> Example Usage - Client Context</p>
-                    <p>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/hubs/blob/master/src/naf-dialog-adapter.js'>hubs/naf-dialog-adapter.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; DialogAdapter &gt; createSendTransport() &gt; _sendTransport.on("connectionstatechange") callback</code>:</p>
+                    <p className='break-words'>From <code><a className='underline' target="_blank" href='https://github.com/mozilla/hubs/blob/master/src/naf-dialog-adapter.js'>hubs/naf-dialog-adapter.js<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> &gt; DialogAdapter &gt; createSendTransport() &gt; _sendTransport.on("connectionstatechange") callback</code>:</p>
                     <SyntaxHighlighter className="transition-colors rounded-md" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
                         {`this._sendTransport.on("connectionstatechange", connectionState => {
     //this.checkSendIceStatus(connectionState); (Function call expanded below.)

@@ -22,7 +22,7 @@ export const DialogConnectionProcessOverview = ({ darkThemeEnabled }) => {
                 </div>
             </div>
 
-            <table className='w-full mt-4 md:w-auto table-auto overflow-x-auto rounded-md'>
+            <table className='w-full inline-block mt-4 md:w-auto table-auto overflow-x-auto rounded-md'>
                 <thead className='text-xs uppercase bg-slate-700 text-slate-100'>
                     <tr>
                         <th scope="col" className="px-6 py-3">File</th>
@@ -34,7 +34,9 @@ export const DialogConnectionProcessOverview = ({ darkThemeEnabled }) => {
                     <TableRow col1={
                         <a href="https://github.com/mozilla/hubs/blob/master/src/hub.js" target="_blank" className='underline text-sm'><code>hub.js</code></a>
                     } cols={[
-                        <code className='text-sm'>document.addEventListener("DOMContentLoaded") Callback</code>,
+                        <SyntaxHighlighter className="transition-colors rounded-md text-sm" language="javascript" style={darkThemeEnabled ? a11yDark : a11yLight} wrapLongLines={true}>
+                            {`document.addEventListener("DOMContentLoaded") Callback`}
+                        </SyntaxHighlighter>,
                         <p>Fires upon page load</p>
                     ]} />
                     <TableRow col1={
