@@ -4,11 +4,11 @@
   "private": true,
   "description": "",
   "scripts": {
-    "develop": "gatsby develop -H 0.0.0.0",
+    "develop:web": "gatsby develop -H 0.0.0.0",
     "start": "gatsby develop",
-    "build": "gatsby build --prefix-paths",
-    "serve": "gatsby serve --prefix-paths",
-    "clean": "gatsby clean",
+    "build:web": "gatsby build --prefix-paths",
+    "serve:web": "gatsby serve --prefix-paths",
+    "clean:web": "gatsby clean",
     "update-all-latest": "ncu"
   },
   "repository": {

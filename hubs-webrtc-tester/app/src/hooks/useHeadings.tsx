@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-export const useHeadings = () => {
+export const useHeadings = ( rootElement: Document | Element | undefined = document, filter = "h2, h3, h4, h5, h6" ) => {
     interface Headings {
         id: string;
         text: string;
@@ -9,7 +9,7 @@ export const useHeadings = () => {
 
     const [headings, setHeadings] = useState<Headings[]>([]);
     useEffect(() => {
-        const elements = Array.from(document.querySelectorAll("h2, h3, h4, h5, h6"))
+        const elements = Array.from(rootElement.querySelectorAll(filter))
             .filter((element) => element.id && element.id !== 'navigation')
             .map((element) => ({
                 id: element.id,
@@ -17,6 +17,7 @@ export const useHeadings = () => {
                 level: Number(element.tagName.substring(1))
             }));
         setHeadings(elements);
-    }, []);
+    }, [rootElement]);
+
     return headings;
 }

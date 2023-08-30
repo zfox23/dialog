@@ -22,10 +22,10 @@ _(Untested as of 2023-07-20)_ You should also be able to run this tester against
 
 #### Running the Web Tester Client
 1. In your command line, `cd` into the `app` directory within this folder.
-2. Type `npm run develop` and press enter.
+2. Type `npm run develop:web` and press enter.
 3. Navigate to [`http://localhost:8000`](http://localhost:8000) to access the tool.
 
-You can use `npm run build` to build a faster, minified version of the tester application that can be deployed on a remote Web server from the resultant `public/` folder. Right now, there are no significant differences between a local development build and a "production" build.
+You can use `npm run build:web` to build a faster, minified version of the tester application that can be deployed on a remote Web server from the resultant `public/` folder. Right now, there are no significant differences between a local development build and a "production" build.
 
 ### NodeJS Client Usage
 #### Prerequisites
@@ -35,7 +35,13 @@ You can use `npm run build` to build a faster, minified version of the tester ap
 3. In your command line, type `npm i` and press enter to install the application's NodeJS dependencies.
 
 #### Running the NodeJS Tester Client
-<it doesn't exist yet 👻>
+<it doesn't exist yet 👻, here are some notes>
+
+`mediasoup-client` doesn't support the NodeJS runtime environment. When I attempt to run the NodeJS client, it complains, upon `Device` creation, that the device is not supported.
+
+Here's a work-in-progress library that someone made several years ago to use the Mediasoup Client in the NodeJS context: [`mediasoup-client-node`](https://github.com/shinyoshiaki/mediasoup-client-node)
+
+I'll have to determine if that's useful to us. If so, it will require some refactoring of code I thought could be shared (i.e. `/app/src/shared/lib/*`).
 
 ----------------------------------------------------------------
 

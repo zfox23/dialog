@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Layout } from '../components/Layout';
 import { ArrowTopRightOnSquareIcon, ChevronRightIcon, ExclamationCircleIcon, BookmarkIcon as SolidBookmarkIcon } from '@heroicons/react/24/solid';
 import { BookmarkIcon as OutlineBookmarkIcon } from '@heroicons/react/24/outline';
@@ -12,30 +12,13 @@ import { WhatIsWebRTC } from '../components/about/WhatIsWebRTC';
 import { CommunicationDataFlow } from '../components/about/CommunicationDataFlow';
 import { HubsWebRTCLibraries } from '../components/about/HubsWebRTCLibraries';
 import { FrequentlyAskedQuestions } from '../components/about/FrequentlyAskedQuestions';
-import { useHeadings } from '../hooks/useHeadings';
-import { DialogConnectionProcessOverview } from '../components/about/DialogConnectionProcessOverview';
 import { Conclusion } from '../components/about/Conclusion';
 import { ChevronLeftIcon } from '@heroicons/react/20/solid';
 import { Link } from 'gatsby';
-import { linearScale } from '../shared/lib/utilities';
 import { CodeSampleLibrary } from '../components/about/CodeSampleLibrary';
 import { SEO } from '../components/SEO';
-import { HubsDivider } from '../components/HubsDivider';
-
-const TableOfContents = ({ className }: { className?: string }) => {
-    const headings = useHeadings();
-    return (
-        <nav className={className}>
-            <ul>
-                {headings.map(heading => (
-                    <li key={heading.id} style={{ marginLeft: `${(heading.level - 2) * 1.25}em`, fontSize: `${linearScale(heading.level, 2, 6, 1.25, 0.75)}rem` }}>
-                        <a className='hover:underline' href={`#${heading.id}`} > {heading.text} </a>
-                    </li>
-                ))}
-            </ul>
-        </nav>
-    );
-}
+import { DialogProcessesDemystified } from '../components/about/DialogProcessesDemystified';
+import { TableOfContents } from '../components/about/TableOfContents';
 
 const PageNavigationMenu = () => {
     return (
@@ -129,7 +112,7 @@ const AboutPage = ({ }) => {
 
                     <HubsWebRTCLibraries darkThemeEnabled={darkThemeEnabled} />
 
-                    <DialogConnectionProcessOverview darkThemeEnabled={darkThemeEnabled} />
+                    <DialogProcessesDemystified darkThemeEnabled={darkThemeEnabled} />
 
                     <FrequentlyAskedQuestions darkThemeEnabled={darkThemeEnabled} />
 

@@ -13,7 +13,7 @@ export const Conclusion = ({ }) => {
                 <li><a className='underline' target="_blank" href='https://github.com/mozilla/hubs'>Hubs client<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a></li>
                 <li><a className='underline' target="_blank" href='https://github.com/mozilla/dialog'>Dialog SFU and Signaling Server<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a></li>
                 <li><a className='underline' target="_blank" href='https://github.com/mozilla/reticulum'>Reticulum Phoenix Server<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a></li>
-                <li><a className='underline' target="_blank" href='https://github.com/mozilla/hubs-compose'>hubs-compose - A Docker Componse setup for locally running all Hubs components<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a></li>
+                <li><a className='underline' target="_blank" href='https://github.com/mozilla/hubs-compose'>hubs-compose<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a> - A Docker Componse setup for locally running all Hubs components</li>
             </ul>
 
             <p>If you have additional questions about Hubs or Hubs' use of WebRTC, Mozilla developers are available to answer your questions on <a className='underline' target="_blank" href='https://discord.com/invite/sBMqSjCndj'>the Hubs Discord server<ArrowTopRightOnSquareIcon className='h-4 w-4 ml-1 -top-0.5 relative inline-block' /></a>.</p>

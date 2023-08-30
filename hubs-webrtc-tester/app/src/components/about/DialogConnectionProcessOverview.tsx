@@ -9,9 +9,9 @@ import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hl
 export const DialogConnectionProcessOverview = ({ darkThemeEnabled }) => {
     return (
         <div className='mt-4 p-2 pt-4 w-full max-w-4xl space-y-4'>
-            <h2 id="dialog-connection-overview" className='text-3xl font-semibold'><a href="#dialog-connection-overview" className='hover:underline'>Dialog Connection Process</a></h2>
+            <h3 id="dialog-connection-overview" className='text-2xl font-semibold'><a href="#dialog-connection-overview" className='hover:underline'>Dialog Connection Process</a></h3>
             <Divider className='!mt-1' />
-            <p>To tie all of the above together, we outline here the steps that the client takes to connect to a Dialog instance and begin sending/receiving media.</p>
+            <p>We outline here the steps that the client takes to connect to a Dialog instance and begin sending/receiving media.</p>
 
             <div className='p-4 rounded-md bg-yellow-50 dark:bg-yellow-800/20 relative'>
                 <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
@@ -25,7 +25,7 @@ export const DialogConnectionProcessOverview = ({ darkThemeEnabled }) => {
             <table className='w-full inline-block mt-4 md:w-auto table-auto overflow-x-auto rounded-md'>
                 <thead className='text-xs uppercase bg-slate-700 text-slate-100'>
                     <tr>
-                        <th scope="col" className="px-6 py-3">File</th>
+                        <th scope="col" className="px-1 py-3">File</th>
                         <th scope="col" className="px-6 py-3">Function</th>
                         <th scope="col" className="px-6 py-3">Translation</th>
                     </tr>
@@ -148,8 +148,6 @@ await this.createRecvTransport(iceServers);`}
                     ]} />
                 </tbody>
             </table>
-
-            <HubsDivider className='w-full max-w-6xl' />
         </div>
     )
 }
