@@ -8,17 +8,19 @@ import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hl
 
 export const DialogConnectionProcessOverview = ({ darkThemeEnabled }) => {
     return (
-        <div className='mt-4 p-2 pt-4 w-full max-w-4xl space-y-4'>
-            <h3 id="dialog-connection-overview" className='text-2xl font-semibold'><a href="#dialog-connection-overview" className='hover:underline'>Dialog Connection Process</a></h3>
-            <Divider className='!mt-1' />
-            <p>We outline here the steps that the client takes to connect to a Dialog instance and begin sending/receiving media.</p>
+        <div className='mt-4 p-2 pt-4 w-full max-w-7xl space-y-4'>
+            <div className='w-full max-w-4xl space-y-4 mx-auto'>
+                <h3 id="dialog-connection-overview" className='text-2xl font-semibold'><a href="#dialog-connection-overview" className='hover:underline'>Dialog Connection Process</a></h3>
+                <Divider className='!mt-1' />
+                <p>We outline here the steps that the client takes to connect to a Dialog instance and begin sending/receiving media.</p>
 
-            <div className='p-4 rounded-md bg-yellow-50 dark:bg-yellow-800/20 relative'>
-                <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
-                    <ExclamationCircleIcon className='text-yellow-300 dark:text-yellow-600/40 opacity-50' />
-                </div>
-                <div className='z-10 relative'>
-                    <p><span className='font-semibold'>This outline does not cover error handling.</span> If an error occurs at any point during this complex connection process, the client must attempt to recover. There may be unhandled error cases in this process. Such error cases can be tough to find, and may be the source of unresolved WebRTC-related bugs.</p>
+                <div className='p-4 rounded-md bg-yellow-50 dark:bg-yellow-800/20 relative'>
+                    <div className='p-1 overflow-clip w-16 absolute top-0.5 left-0 bottom-0 flex items-start justify-center z-0'>
+                        <ExclamationCircleIcon className='text-yellow-300 dark:text-yellow-600/40 opacity-50' />
+                    </div>
+                    <div className='z-10 relative'>
+                        <p><span className='font-semibold'>This outline does not cover error handling.</span> If an error occurs at any point during this complex connection process, the client must attempt to recover. There may be unhandled error cases in this process. Such error cases can be tough to find, and may be the source of unresolved WebRTC-related bugs.</p>
+                    </div>
                 </div>
             </div>
 
