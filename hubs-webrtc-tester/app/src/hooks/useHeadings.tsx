@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { isBrowser } from '../shared/lib/utilities';
 
-export const useHeadings = ( rootElement: Document | Element | undefined = document, filter = "h2, h3, h4, h5, h6" ) => {
+export const useHeadings = ( rootElement: Document | Element | undefined = isBrowser ? document : undefined, filter = "h2, h3, h4, h5, h6" ) => {
     interface Headings {
         id: string;
         text: string;
